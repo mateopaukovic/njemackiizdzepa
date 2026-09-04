@@ -1,0 +1,18 @@
+{
+  "name": "njemackiizdzepa",
+  "short_name": "njemackiizdzepa",
+  "description": "Njemački iz džepa. Reci situaciju, pa govori.",
+  "start_url": "/",
+  "display": "standalone",
+  "lang": "hr",
+  "background_color": "#f3e6c8",
+  "theme_color": "#1c1612",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

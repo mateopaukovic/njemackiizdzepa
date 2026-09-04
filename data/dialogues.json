@@ -1,0 +1,376 @@
+{
+  "bank": {
+    "title_de": "Konto eröffnen",
+    "title_hr": "Otvaranje računa",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Otvoriti račun i dogovoriti što treba donijeti.",
+    "role_other_hr": "Bankovna savjetnica",
+    "tips_hr": [
+      "Na šalteru uvijek Sie.",
+      "Ausweis = osobna iskaznica ili putovnica."
+    ],
+    "vocab": [
+      { "de": "das Konto", "hr": "račun" },
+      { "de": "der Ausweis", "hr": "osobna iskaznica" },
+      { "de": "die Meldebescheinigung", "hr": "potvrda o prijavi boravišta" },
+      { "de": "eröffnen", "hr": "otvoriti" },
+      { "de": "unterschreiben", "hr": "potpisati" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Wie kann ich Ihnen helfen?", "hr": "Dobar dan. Kako vam mogu pomoći?" },
+      { "role": "you", "de": "Guten Tag. Ich möchte ein Konto eröffnen.", "hr": "Dobar dan. Želim otvoriti račun." },
+      { "role": "other", "de": "Sehr gern. Haben Sie Ihren Ausweis dabei?", "hr": "Vrlo rado. Imate li osobnu iskaznicu kod sebe?" },
+      { "role": "you", "de": "Ja, hier ist mein Ausweis.", "hr": "Da, evo moje osobne iskaznice." },
+      { "role": "other", "de": "Möchten Sie ein Girokonto?", "hr": "Želite li tekući račun?" },
+      { "role": "you", "de": "Ja, bitte. Was muss ich mitbringen?", "hr": "Da, molim. Što moram donijeti?" },
+      { "role": "other", "de": "Den Ausweis und eine Meldebescheinigung.", "hr": "Osobnu iskaznicu i potvrdu o prijavi boravišta." },
+      { "role": "you", "de": "Können Sie das bitte wiederholen?", "hr": "Možete li to molim ponoviti?" },
+      { "role": "other", "de": "Ausweis und Meldebescheinigung. Wie lautet Ihre Adresse?", "hr": "Iskaznica i potvrda. Koja je vaša adresa?" },
+      { "role": "you", "de": "Ich wohne in der Hauptstraße 12.", "hr": "Stanujem u Hauptstraße 12." }
+    ]
+  },
+  "job": {
+    "title_de": "Vorstellungsgespräch",
+    "title_hr": "Razgovor za posao",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Predstaviti se, reći iskustvo i pitati za radno vrijeme.",
+    "role_other_hr": "Poslodavac",
+    "tips_hr": [
+      "Kratko i jasno: tko si, što tražiš, kad možeš.",
+      "Na kraju uvijek jedno pitanje od tebe."
+    ],
+    "vocab": [
+      { "de": "die Bewerbung", "hr": "prijava / molba za posao" },
+      { "de": "die Erfahrung", "hr": "iskustvo" },
+      { "de": "die Arbeitszeiten", "hr": "radno vrijeme" },
+      { "de": "anfangen", "hr": "početi" },
+      { "de": "das Lager", "hr": "skladište" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Bitte setzen Sie sich.", "hr": "Dobar dan. Molim, sjednite." },
+      { "role": "you", "de": "Guten Tag. Vielen Dank.", "hr": "Dobar dan. Hvala." },
+      { "role": "other", "de": "Erzählen Sie kurz, warum Sie hier sind.", "hr": "Recite ukratko zašto ste ovdje." },
+      { "role": "you", "de": "Ich bewerbe mich als Lagerarbeiter.", "hr": "Prijavljujem se kao skladištar." },
+      { "role": "other", "de": "Haben Sie Berufserfahrung?", "hr": "Imate li radno iskustvo?" },
+      { "role": "you", "de": "Ja, ich habe zwei Jahre in einem Lager gearbeitet.", "hr": "Da, radio sam dvije godine u skladištu." },
+      { "role": "other", "de": "Wann können Sie anfangen?", "hr": "Kad možete početi?" },
+      { "role": "you", "de": "Ich kann nächste Woche anfangen.", "hr": "Mogu početi sljedeći tjedan." },
+      { "role": "other", "de": "Haben Sie noch Fragen?", "hr": "Imate li još pitanja?" },
+      { "role": "you", "de": "Ja. Wie sind die Arbeitszeiten?", "hr": "Da. Kakvo je radno vrijeme?" },
+      { "role": "other", "de": "Von sechs bis vierzehn Uhr, Montag bis Freitag.", "hr": "Od šest do četrnaest, ponedjeljak do petak." },
+      { "role": "you", "de": "Wie bitte? Können Sie das bitte wiederholen?", "hr": "Oprostite? Možete li to ponoviti?" }
+    ]
+  },
+  "doctor": {
+    "title_de": "Beim Arzt",
+    "title_hr": "Kod liječnika",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Opisati simptome i pitati za bolovanje.",
+    "role_other_hr": "Liječnica",
+    "tips_hr": [
+      "Reci što boli, od kad, i uzimaš li već nešto.",
+      "Krankschreibung = potvrda za posao / bolovanje."
+    ],
+    "vocab": [
+      { "de": "die Halsschmerzen", "hr": "bol u grlu" },
+      { "de": "das Fieber", "hr": "groznica" },
+      { "de": "die Krankschreibung", "hr": "bolovanje / doznaka" },
+      { "de": "das Rezept", "hr": "recept" },
+      { "de": "seit", "hr": "od (vremena)" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Was fehlt Ihnen?", "hr": "Dobar dan. Što vam je?" },
+      { "role": "you", "de": "Guten Tag. Ich habe Halsschmerzen und Fieber.", "hr": "Dobar dan. Imam bol u grlu i groznicu." },
+      { "role": "other", "de": "Seit wann haben Sie die Beschwerden?", "hr": "Od kada imate tegobe?" },
+      { "role": "you", "de": "Seit drei Tagen.", "hr": "Od prije tri dana." },
+      { "role": "other", "de": "Haben Sie Husten?", "hr": "Imate li kašalj?" },
+      { "role": "you", "de": "Ja, ein bisschen. Ich verstehe nicht ganz — was soll ich tun?", "hr": "Da, malo. Ne razumijem baš — što da radim?" },
+      { "role": "other", "de": "Ruhe, viel trinken. Ich schaue mir den Hals an.", "hr": "Mir, puno piti. Pogledat ću grlo." },
+      { "role": "you", "de": "Brauche ich eine Krankschreibung?", "hr": "Trebam li bolovanje?" },
+      { "role": "other", "de": "Ja, für drei Tage. Hier ist das Rezept.", "hr": "Da, na tri dana. Evo recepta." },
+      { "role": "you", "de": "Vielen Dank. Auf Wiedersehen.", "hr": "Hvala. Doviđenja." }
+    ]
+  },
+  "amt": {
+    "title_de": "Anmeldung im Bürgeramt",
+    "title_hr": "Prijava boravišta / Amt",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Prijaviti boravište i znati koje papire trebaš.",
+    "role_other_hr": "Službenica na Amtu",
+    "tips_hr": [
+      "Termin je skoro uvijek potreban.",
+      "Mietvertrag + Pass/iskaznica + ponekad Anmeldung od stanodavca."
+    ],
+    "vocab": [
+      { "de": "die Anmeldung", "hr": "prijava boravišta" },
+      { "de": "der Termin", "hr": "termin" },
+      { "de": "der Mietvertrag", "hr": "ugovor o najmu" },
+      { "de": "das Formular", "hr": "obrazac" },
+      { "de": "unterschreiben", "hr": "potpisati" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Haben Sie einen Termin?", "hr": "Dobar dan. Imate li termin?" },
+      { "role": "you", "de": "Ja, ich habe um zehn Uhr einen Termin.", "hr": "Da, imam termin u deset." },
+      { "role": "other", "de": "Wofür sind Sie hier?", "hr": "Zašto ste ovdje?" },
+      { "role": "you", "de": "Ich möchte mich anmelden.", "hr": "Želim se prijaviti (boravište)." },
+      { "role": "other", "de": "Haben Sie Pass und Mietvertrag dabei?", "hr": "Imate li putovnicu i ugovor o najmu?" },
+      { "role": "you", "de": "Ja, hier sind die Unterlagen.", "hr": "Da, evo papira." },
+      { "role": "other", "de": "Seit wann wohnen Sie hier?", "hr": "Od kada ovdje stanujete?" },
+      { "role": "you", "de": "Seit dem ersten März. Wie bitte?", "hr": "Od prvog ožujka. Oprostite?" },
+      { "role": "other", "de": "Bitte füllen Sie dieses Formular aus: Name, Adresse, Datum.", "hr": "Ispunite ovaj obrazac: ime, adresa, datum." },
+      { "role": "you", "de": "Gut. Soll ich hier unterschreiben?", "hr": "Dobro. Trebam li ovdje potpisati?" }
+    ]
+  },
+  "landlord": {
+    "title_de": "Wohnung besichtigen",
+    "title_hr": "Stan / stanodavac",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Pitati za najamninu, troškove i kauciju.",
+    "role_other_hr": "Stanodavac",
+    "tips_hr": [
+      "Kaltmiete + Nebenkosten = što stvarno plaćaš.",
+      "Kaution je često tri mjesečne najamnine."
+    ],
+    "vocab": [
+      { "de": "die Miete", "hr": "najamnina" },
+      { "de": "die Nebenkosten", "hr": "režije / dodatni troškovi" },
+      { "de": "die Kaution", "hr": "kaucija" },
+      { "de": "der Mietvertrag", "hr": "ugovor o najmu" },
+      { "de": "die Schufa", "hr": "njemačka kreditna provjera" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Sie schauen sich die Wohnung an?", "hr": "Dobar dan. Gledate stan?" },
+      { "role": "you", "de": "Ja, ich interessiere mich für die Wohnung.", "hr": "Da, zanima me stan." },
+      { "role": "other", "de": "Die Miete ist 650 Euro plus Nebenkosten.", "hr": "Najamnina je 650 eura plus režije." },
+      { "role": "you", "de": "Was ist in den Nebenkosten?", "hr": "Što je u režijama?" },
+      { "role": "other", "de": "Heizung, Wasser und Müll.", "hr": "Grijanje, voda i smeće." },
+      { "role": "you", "de": "Kann ich die Wohnung ab April mieten?", "hr": "Mogu li unajmiti stan od travnja?" },
+      { "role": "other", "de": "Ja. Haben Sie eine Schufa?", "hr": "Da. Imate li Schufu?" },
+      { "role": "you", "de": "Ich bin neu in Deutschland. Ich verstehe nicht ganz.", "hr": "Novi sam u Njemačkoj. Ne razumijem baš." },
+      { "role": "other", "de": "Dann brauchen wir eine Kaution. Drei Monatsmieten.", "hr": "Onda treba kaucija. Tri mjesečne najamnine." },
+      { "role": "you", "de": "Wie hoch ist die Kaution genau?", "hr": "Kolika je točno kaucija?" }
+    ]
+  },
+  "jobcenter": {
+    "title_de": "Im Jobcenter",
+    "title_hr": "Jobcenter",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Reći da tražiš posao i pitati koje papire donijeti.",
+    "role_other_hr": "Savjetnik u Jobcenteru",
+    "tips_hr": [
+      "Ime, status, što tražiš — tri rečenice.",
+      "Nemoj lagati o prijavama; reci broj."
+    ],
+    "vocab": [
+      { "de": "das Bürgergeld", "hr": "socijalna naknada (Bürgergeld)" },
+      { "de": "die Bewerbung", "hr": "prijava za posao" },
+      { "de": "die Unterlagen", "hr": "dokumenti" },
+      { "de": "der Kontoauszug", "hr": "izvadak s računa" },
+      { "de": "suchen", "hr": "tražiti" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Ihr Name bitte?", "hr": "Dobar dan. Ime, molim?" },
+      { "role": "you", "de": "Guten Tag. Mein Name ist Marko Horvat.", "hr": "Dobar dan. Zovem se Marko Horvat." },
+      { "role": "other", "de": "Sie möchten Bürgergeld beantragen?", "hr": "Želite li predati zahtjev za Bürgergeld?" },
+      { "role": "you", "de": "Ja, ich suche Arbeit und brauche Unterstützung.", "hr": "Da, tražim posao i trebam podršku." },
+      { "role": "other", "de": "Haben Sie sich schon beworben?", "hr": "Jeste li se već prijavljivali?" },
+      { "role": "you", "de": "Ja, ich habe drei Bewerbungen geschickt.", "hr": "Da, poslao sam tri prijave." },
+      { "role": "other", "de": "Welche Arbeit suchen Sie?", "hr": "Kakav posao tražite?" },
+      { "role": "you", "de": "Ich suche Arbeit im Lager oder in der Küche.", "hr": "Tražim posao u skladištu ili u kuhinji." },
+      { "role": "other", "de": "Bitte Pass, Meldebescheinigung und Kontoauszug mitbringen.", "hr": "Donijeti putovnicu, prijavu boravišta i izvadak s računa." },
+      { "role": "you", "de": "Können Sie das bitte wiederholen?", "hr": "Možete li to molim ponoviti?" }
+    ]
+  },
+  "train": {
+    "title_de": "Deutschlandticket kaufen",
+    "title_hr": "Vlak / Deutschlandticket",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Kupiti kartu ili Deutschlandticket i znati gdje vrijedi.",
+    "role_other_hr": "Blagajnica na kolodvoru",
+    "tips_hr": [
+      "Deutschlandticket = mjesečna karta za regionalni promet.",
+      "ICE nije uključen."
+    ],
+    "vocab": [
+      { "de": "die Fahrkarte", "hr": "karta" },
+      { "de": "das Deutschlandticket", "hr": "mjesečna karta za regionalni promet" },
+      { "de": "einfach", "hr": "samo u jednom smjeru" },
+      { "de": "der Regionalzug", "hr": "regionalni vlak" },
+      { "de": "die S-Bahn", "hr": "gradska željeznica" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Wohin möchten Sie fahren?", "hr": "Dobar dan. Kamo želite ići?" },
+      { "role": "you", "de": "Ich brauche ein Ticket nach München.", "hr": "Trebam kartu za München." },
+      { "role": "other", "de": "Einfach oder hin und zurück?", "hr": "Samo tamo ili povratna?" },
+      { "role": "you", "de": "Einfach, bitte. Was ist das Deutschlandticket?", "hr": "Samo tamo. Što je Deutschlandticket?" },
+      { "role": "other", "de": "Für 58 Euro im Monat fahren Sie regional in ganz Deutschland.", "hr": "Za 58 eura mjesečno vozite regionalno po cijeloj Njemačkoj." },
+      { "role": "you", "de": "Kann ich das hier kaufen?", "hr": "Mogu li to ovdje kupiti?" },
+      { "role": "other", "de": "Ja, mit Ausweis. Möchten Sie das?", "hr": "Da, s iskaznicom. Želite li to?" },
+      { "role": "you", "de": "Ja. Kann ich damit auch S-Bahn fahren?", "hr": "Da. Mogu li time i S-Bahn?" },
+      { "role": "other", "de": "Ja, S-Bahn, Bus, Tram und Regionalzug. Nicht der ICE.", "hr": "Da, S-Bahn, bus, tramvaj i regionalni vlak. Ne ICE." },
+      { "role": "you", "de": "Wie bitte? Nicht der ICE — verstehe ich das richtig?", "hr": "Oprostite? Ne ICE — jesam li dobro shvatio?" }
+    ]
+  },
+  "abh": {
+    "title_de": "Aufenthaltserlaubnis",
+    "title_hr": "Ausländerbehörde",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Reći zašto si tu i pitati što još treba donijeti.",
+    "role_other_hr": "Službenik na Ausländerbehörde",
+    "tips_hr": [
+      "Bez termina skoro ništa ne ide.",
+      "Fiktionsbescheinigung = privremeno smiješ ostati."
+    ],
+    "vocab": [
+      { "de": "die Aufenthaltserlaubnis", "hr": "dozvola boravka" },
+      { "de": "der Termin", "hr": "termin" },
+      { "de": "die Fiktionsbescheinigung", "hr": "privremena potvrda boravka" },
+      { "de": "biometrische Fotos", "hr": "biometrijske fotografije" },
+      { "de": "der Pass", "hr": "putovnica" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Haben Sie einen Termin?", "hr": "Dobar dan. Imate li termin?" },
+      { "role": "you", "de": "Ja, ich habe einen Termin für die Aufenthaltserlaubnis.", "hr": "Da, imam termin za dozvolu boravka." },
+      { "role": "other", "de": "Bitte Ihren Pass.", "hr": "Putovnicu, molim." },
+      { "role": "you", "de": "Hier ist mein Pass.", "hr": "Evo putovnice." },
+      { "role": "other", "de": "Arbeiten Sie schon?", "hr": "Radite li već?" },
+      { "role": "you", "de": "Noch nicht. Ich suche Arbeit.", "hr": "Još ne. Tražim posao." },
+      { "role": "other", "de": "Dann brauchen Sie eine Fiktionsbescheinigung.", "hr": "Onda trebate privremenu potvrdu." },
+      { "role": "you", "de": "Ich verstehe nicht ganz. Was bedeutet das?", "hr": "Ne razumijem baš. Što to znači?" },
+      { "role": "other", "de": "Sie dürfen vorläufig bleiben. Etwa vier bis sechs Wochen.", "hr": "Smijete privremeno ostati. Otprilike četiri do šest tjedana." },
+      { "role": "you", "de": "Muss ich noch biometrische Fotos mitbringen?", "hr": "Moram li još donijeti biometrijske fotografije?" }
+    ]
+  },
+  "kita": {
+    "title_de": "Kita-Platz anmelden",
+    "title_hr": "Vrtić",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Prijaviti dijete i pitati za vrijeme, cijenu i papire.",
+    "role_other_hr": "Voditeljica vrtića",
+    "tips_hr": [
+      "Ganztags = cijeli dan.",
+      "Masernschutz (morbili) je obavezan."
+    ],
+    "vocab": [
+      { "de": "der Kitaplatz", "hr": "mjesto u vrtiću" },
+      { "de": "ganztags", "hr": "cijeli dan" },
+      { "de": "die Betreuungszeit", "hr": "vrijeme čuvanja" },
+      { "de": "der Impfnachweis", "hr": "potvrda o cijepljenju" },
+      { "de": "das Einkommen", "hr": "prihod" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Sie möchten einen Platz für Ihr Kind?", "hr": "Dobar dan. Želite mjesto za dijete?" },
+      { "role": "you", "de": "Ja, für meine Tochter. Sie ist drei Jahre alt.", "hr": "Da, za kćer. Ima tri godine." },
+      { "role": "other", "de": "Ab wann brauchen Sie den Platz?", "hr": "Od kada trebate mjesto?" },
+      { "role": "you", "de": "Ab September, ganztags.", "hr": "Od rujna, cijeli dan." },
+      { "role": "other", "de": "Die Betreuungszeit ist von sieben bis sechzehn Uhr.", "hr": "Čuvanje je od sedam do šesnaest." },
+      { "role": "you", "de": "Was kostet das?", "hr": "Koliko to košta?" },
+      { "role": "other", "de": "Das hängt vom Einkommen ab. Bitte das Formular ausfüllen.", "hr": "Ovisi o prihodu. Ispunite obrazac." },
+      { "role": "you", "de": "Brauchen Sie Impfnachweise?", "hr": "Trebate li potvrde o cijepljenju?" },
+      { "role": "other", "de": "Ja, Masernschutz ist Pflicht.", "hr": "Da, zaštita od morbila je obavezna." },
+      { "role": "you", "de": "Können Sie das bitte wiederholen? Masernschutz?", "hr": "Možete li to ponoviti? Masernschutz?" }
+    ]
+  },
+  "neighbor": {
+    "title_de": "Neue Nachbarn",
+    "title_hr": "Susjedi",
+    "level": "A2",
+    "formality": "du",
+    "goal_hr": "Predstaviti se, dogovoriti tišinu i pitati za smeće.",
+    "role_other_hr": "Susjeda",
+    "tips_hr": [
+      "Sa susjedima često du, ali kreni pristojno.",
+      "Ruhezeit: obično nakon 22 sata."
+    ],
+    "vocab": [
+      { "de": "einziehen", "hr": "useliti se" },
+      { "de": "leise", "hr": "tiho" },
+      { "de": "der Müll", "hr": "smeće" },
+      { "de": "der gelbe Sack", "hr": "žuta vreća (ambalaza)" },
+      { "de": "die Nachbarin", "hr": "susjeda" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Hallo, du bist neu hier, oder?", "hr": "Bok, novi si ovdje, zar ne?" },
+      { "role": "you", "de": "Ja, ich bin vor einer Woche eingezogen.", "hr": "Da, uselio sam se prije tjedan dana." },
+      { "role": "other", "de": "Willkommen! Ich wohne nebenan.", "hr": "Dobro došao! Stanujem do tebe." },
+      { "role": "you", "de": "Freut mich. Ich heiße Ana.", "hr": "Drago mi je. Zovem se Ana." },
+      { "role": "other", "de": "Eine Bitte: nach 22 Uhr bitte leise.", "hr": "Jedna molba: nakon 22 tiho." },
+      { "role": "you", "de": "Natürlich. Tut mir leid, wenn es laut war.", "hr": "Naravno. Oprosti ako je bilo glasno." },
+      { "role": "other", "de": "Kein Problem. Weißt du, wo der Müll ist?", "hr": "Nema frke. Znaš li gdje je smeće?" },
+      { "role": "you", "de": "Noch nicht. Kannst du das bitte wiederholen?", "hr": "Još ne. Možeš li to ponoviti?" },
+      { "role": "other", "de": "Gelber Sack, Restmüll, Biomüll — im Hof.", "hr": "Žuta vreća, ostalo, bio — u dvorištu." },
+      { "role": "you", "de": "Danke. Wann kommt die Post?", "hr": "Hvala. Kad dolazi pošta?" }
+    ]
+  },
+  "parcel": {
+    "title_de": "Paket abholen",
+    "title_hr": "Paket u pošti / DHL",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Preuzeti paket s iskaznicom i kodom.",
+    "role_other_hr": "Šalter u Packstationu / pošti",
+    "tips_hr": [
+      "Bez iskaznice često ne daju paket.",
+      "Abholcode je na SMS-u ili u aplikaciji."
+    ],
+    "vocab": [
+      { "de": "das Paket", "hr": "paket" },
+      { "de": "abholen", "hr": "preuzeti" },
+      { "de": "der Abholcode", "hr": "kod za preuzimanje" },
+      { "de": "die Sendungsnummer", "hr": "broj pošiljke" },
+      { "de": "der Ausweis", "hr": "osobna iskaznica" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Kann ich Ihnen helfen?", "hr": "Dobar dan. Mogu li pomoći?" },
+      { "role": "you", "de": "Ja, ich möchte ein Paket abholen.", "hr": "Da, želim preuzeti paket." },
+      { "role": "other", "de": "Haben Sie den Abholcode und Ihren Ausweis?", "hr": "Imate li kod i osobnu iskaznicu?" },
+      { "role": "you", "de": "Ja, hier ist mein Ausweis. Der Code ist 4821.", "hr": "Da, evo iskaznice. Kod je 4821." },
+      { "role": "other", "de": "Einen Moment. Das Paket ist da.", "hr": "Trenutak. Paket je tu." },
+      { "role": "you", "de": "Muss ich unterschreiben?", "hr": "Moram li potpisati?" },
+      { "role": "other", "de": "Ja, bitte hier. Ist die Adresse richtig?", "hr": "Da, ovdje. Je li adresa točna?" },
+      { "role": "you", "de": "Wie bitte? Welche Adresse?", "hr": "Oprostite? Koja adresa?" },
+      { "role": "other", "de": "Hauptstraße 12. Stimmt das?", "hr": "Hauptstraße 12. Je li to točno?" },
+      { "role": "you", "de": "Ja, das stimmt. Vielen Dank.", "hr": "Da, točno. Hvala." }
+    ]
+  },
+  "emergency": {
+    "title_de": "In der Notaufnahme",
+    "title_hr": "Hitna / Notaufnahme",
+    "level": "A2",
+    "formality": "Sie",
+    "goal_hr": "Reći što boli, od kad, i imaš li osiguranje.",
+    "role_other_hr": "Sestra na trijaži",
+    "tips_hr": [
+      "Ime, bol, od kad, alergije — to je dovoljno.",
+      "Krankenkassenkarte ako je imaš."
+    ],
+    "vocab": [
+      { "de": "die Notaufnahme", "hr": "hitna pomoć (bolnica)" },
+      { "de": "die Schmerzen", "hr": "bolovi" },
+      { "de": "die Versicherungskarte", "hr": "kartica osiguranja" },
+      { "de": "die Allergie", "hr": "alergija" },
+      { "de": "sofort", "hr": "odmah" }
+    ],
+    "lines": [
+      { "role": "other", "de": "Guten Tag. Was ist passiert?", "hr": "Dobar dan. Što se dogodilo?" },
+      { "role": "you", "de": "Ich habe starke Schmerzen im Bauch.", "hr": "Imam jake bolove u trbuhu." },
+      { "role": "other", "de": "Seit wann?", "hr": "Od kada?" },
+      { "role": "you", "de": "Seit heute Morgen.", "hr": "Od jutros." },
+      { "role": "other", "de": "Haben Sie eine Versicherungskarte?", "hr": "Imate li karticu osiguranja?" },
+      { "role": "you", "de": "Ja, hier. Ich verstehe nicht ganz — muss ich warten?", "hr": "Da, evo. Ne razumijem baš — moram li čekati?" },
+      { "role": "other", "de": "Ja, bitte setzen Sie sich. Kommen Sie gleich dran.", "hr": "Da, sjednite. Uskoro ste na redu." },
+      { "role": "you", "de": "Haben Sie Allergien? — Wie bitte, ich soll das sagen?", "hr": "Imate li alergije? — Oprostite, to ja trebam reći?" },
+      { "role": "other", "de": "Ja: Allergien, Medikamente, Name.", "hr": "Da: alergije, lijekovi, ime." },
+      { "role": "you", "de": "Keine Allergien. Mein Name ist Marko Horvat.", "hr": "Nema alergija. Zovem se Marko Horvat." }
+    ]
+  }
+}

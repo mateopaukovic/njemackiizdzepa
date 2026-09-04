@@ -1,0 +1,12 @@
+{
+  "name": "njemackiizdzepa",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Voice-first German practice for Balkan adults — njemački iz džepa.",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

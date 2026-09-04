@@ -1,0 +1,13 @@
+.env
+node_modules/
+*.db
+*.sqlite
+*.sqlite3
+*.log
+.DS_Store
+Thumbs.db
+*.swp
+.idea/
+.vscode/
+dist/
+coverage/

@@ -1,0 +1,33 @@
+Generate a speakable practice situation.
+
+User situation (Croatian, German, or mixed):
+{{user_text}}
+
+Level: {{level}}
+Formality: {{formality}}  (Sie = polite, du = informal)
+
+Return JSON exactly in this shape:
+{
+  "chat_reply_hr": "one or two Croatian sentences introducing the dialogue",
+  "situation": {
+    "title_de": "",
+    "title_hr": "",
+    "level": "{{level}}",
+    "formality": "{{formality}}",
+    "goal_hr": "what the user must achieve, in Croatian",
+    "role_other_hr": "who the other person is, in Croatian",
+    "tips_hr": ["short Croatian tip", "short Croatian tip"],
+    "vocab": [{"de": "der Ausweis", "hr": "osobna iskaznica"}],
+    "lines": [
+      {"role": "other", "de": "", "hr": ""},
+      {"role": "you", "de": "", "hr": ""}
+    ]
+  }
+}
+
+Rules for lines:
+- 8 to 12 lines, alternating other / you when possible. First line is usually other.
+- Each German line is short enough to say in one breath (max ~12 words).
+- Include Wie bitte? or Können Sie das bitte wiederholen? or Ich verstehe nicht ganz as one of the user's lines.
+- Vocab: 4 to 8 Amt-useful words with Croatian glosses.
+- Match formality (Sie vs du) in every German line.
