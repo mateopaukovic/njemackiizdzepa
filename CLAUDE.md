@@ -25,7 +25,7 @@ Copy nginx config and the SQLite file before touching them. Run nginx -t before 
 This repo
 App: njemackiizdzepa — voice-first German practice (UI is Croatian).
 Local: cp .env.example .env && npm start
-Opens: http://127.0.0.1:8000
+Opens: http://127.0.0.1:8000 (server default HOST=0.0.0.0 so Windows Chrome can reach WSL)
 Health: http://127.0.0.1:8000/api/health
 Stack: vanilla HTML/JS + one Node process (no extra deps), LocalStorage, Web Speech API, SpaceXAI via /api/chat and /api/turn.
 Phase: local only. Hetzner later.

@@ -9,7 +9,7 @@ const PUBLIC = path.join(ROOT, "public");
 
 loadEnv(path.join(ROOT, ".env"));
 
-const HOST = process.env.HOST || "127.0.0.1";
+const HOST = process.env.HOST || "0.0.0.0";
 const PORT = Number(process.env.PORT || 8000);
 const LLM_BASE_URL = (process.env.LLM_BASE_URL || "https://api.x.ai/v1").replace(/\/$/, "");
 const LLM_MODEL = process.env.LLM_MODEL || "grok-4.6";
