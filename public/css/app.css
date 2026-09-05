@@ -498,11 +498,6 @@ button.mic {
   background: linear-gradient(transparent, var(--bg) 28%);
 }
 
-.chips {
-  max-width: 44rem;
-  margin: 0 auto 0.55rem;
-}
-
 .chip {
   background: var(--bg-2);
 }
