@@ -1,7 +1,7 @@
 (function () {
   const UI = window.UI;
-  const LS = "njemackuudzepu.v2";
-  const LS_OLD = "njemackuudzepu.v1";
+  const LS = "njemackiudzepu.v2";
+  const LS_OLD = ["njemackuudzepu.v2", "njemackuudzepu.v1", "njemackiizdzepa.v1"];
 
   const state = {
     settings: {
@@ -85,8 +85,10 @@
 
   function load() {
     try {
-      const raw = localStorage.getItem(LS);
-      if (raw) {
+      const keys = [LS].concat(LS_OLD);
+      for (const key of keys) {
+        const raw = localStorage.getItem(key);
+        if (!raw) continue;
         const data = JSON.parse(raw);
         if (data.settings) state.settings = { ...state.settings, ...data.settings };
         if (Array.isArray(data.chats) && data.chats.length) {
@@ -95,21 +97,18 @@
           hydrateChat(cur);
           return;
         }
-      }
-      const old = localStorage.getItem(LS_OLD);
-      if (old) {
-        const data = JSON.parse(old);
-        if (data.settings) state.settings = { ...state.settings, ...data.settings };
-        const c = blankChat();
-        c.messages = data.messages || [];
-        c.situation = data.situation || null;
-        c.mode = data.mode || "text";
-        c.debrief = data.debrief || null;
-        const first = c.messages.find((m) => m.role === "user");
-        if (first) c.title = first.text.slice(0, 42);
-        state.chats = [c];
-        hydrateChat(c);
-        return;
+        if (Array.isArray(data.messages) && data.messages.length) {
+          const c = blankChat();
+          c.messages = data.messages;
+          c.situation = data.situation || null;
+          c.mode = data.mode || "text";
+          c.debrief = data.debrief || null;
+          const first = c.messages.find((m) => m.role === "user");
+          if (first) c.title = first.text.slice(0, 42);
+          state.chats = [c];
+          hydrateChat(c);
+          return;
+        }
       }
     } catch {
       /* ignore bad local data */

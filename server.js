@@ -587,7 +587,7 @@ const server = http.createServer(async (req, res) => {
     if (req.method === "GET" && (urlPath === "/api/health" || urlPath === "/health")) {
       sendJson(res, 200, {
         ok: true,
-        app: "njemackuudzepu",
+        app: "njemackiudzepu",
         llm: Boolean(XAI_API_KEY),
       });
       return;
@@ -615,5 +615,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-  process.stdout.write(`njemackuudzepu http://${HOST}:${PORT}\n`);
+  process.stdout.write(`njemackiudzepu http://${HOST}:${PORT}\n`);
 });

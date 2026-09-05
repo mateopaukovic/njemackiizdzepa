@@ -1,6 +1,6 @@
 window.UI = {
-  name: "njemackuudzepu",
-  tagline: "Njemačku u džepu. Reci situaciju, pa govori.",
+  name: "njemackiudzepu",
+  tagline: "Njemački u džepu. Reci situaciju, pa govori.",
   inputPlaceholder: "Opiši situaciju…",
   send: "Pošalji",
   modes: { text: "Tekst", hidden: "Bez teksta", live: "Razgovor" },
@@ -70,7 +70,7 @@ window.UI = {
   waitingMic: "Dodirni Odgovori kad budeš spreman.",
   aboutBody: {
     meaning:
-      "njemackuudzepu znači njemačku u džepu. Vježbaš njemački naglas — za banku, Amt, posao i svakodnevni život u DE/AT/CH.",
+      "njemackiudzepu znači njemački u džepu. Vježbaš njemački naglas — za banku, Amt, posao i svakodnevni život u DE/AT/CH.",
     who: "Za odrasle s Balkana koji trebaju njemački za posao i institucije, ne za školski test.",
     privacy:
       "Prepoznavanje govora ide preko preglednika (u Chromeu: Google Speech). Tekst ide na jezični model preko lokalnog servera. Ne spremamo sirovi zvuk na disk. Ne spremamo cijele transkripte.",

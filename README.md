@@ -1,11 +1,11 @@
-# njemackuudzepu
+# njemackiudzepu
 
 Voice-first German practice for Balkan adults who need German for Amt, bank, work, doctor, landlord.
 
 The **product UI is Croatian**. Prompts, README, and code are English. German appears only as the practice language.
 
-Display name: **njemackuudzepu**  
-Meaning: njemačku u džepu (German in the pocket)
+Display name: **njemackiudzepu**  
+Meaning: njemački u džepu (German in the pocket)
 
 ## Run locally
 
