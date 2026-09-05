@@ -94,7 +94,7 @@ window.Speech = (function () {
     }
     const rec = new SR();
     currentRec = rec;
-    rec.lang = "de-DE";
+    rec.lang = opts.lang || "de-DE";
     rec.interimResults = false;
     rec.maxAlternatives = 1;
     rec.continuous = false;

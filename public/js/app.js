@@ -1,6 +1,7 @@
 (function () {
   const UI = window.UI;
-  const LS = "njemackuudzepu.v1";
+  const LS = "njemackuudzepu.v2";
+  const LS_OLD = "njemackuudzepu.v1";
 
   const state = {
     settings: {
@@ -10,6 +11,8 @@
       autoMic: true,
       voiceCorrect: false,
     },
+    chats: [],
+    currentId: "",
     messages: [],
     situation: null,
     mode: "text",
@@ -23,6 +26,7 @@
     panel: "home",
     error: "",
     chromeOk: true,
+    dictating: false,
   };
 
   function esc(s) {
@@ -35,31 +39,95 @@
     })[c]);
   }
 
+  function blankChat() {
+    return {
+      id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+      title: UI.untitled,
+      messages: [],
+      situation: null,
+      mode: "text",
+      debrief: null,
+      lineResults: {},
+      hiddenCheck: null,
+      onlyMine: false,
+      updatedAt: Date.now(),
+    };
+  }
+
+  function snapshotChat() {
+    const c = state.chats.find((x) => x.id === state.currentId);
+    if (!c) return;
+    c.messages = state.messages.slice(-40);
+    c.situation = state.situation;
+    c.mode = state.mode;
+    c.debrief = state.debrief;
+    c.lineResults = state.lineResults;
+    c.hiddenCheck = state.hiddenCheck;
+    c.onlyMine = state.onlyMine;
+    c.updatedAt = Date.now();
+    const first = c.messages.find((m) => m.role === "user");
+    if (first) c.title = first.text.slice(0, 42);
+  }
+
+  function hydrateChat(c) {
+    state.currentId = c.id;
+    state.messages = c.messages || [];
+    state.situation = c.situation || null;
+    state.mode = c.mode || "text";
+    state.debrief = c.debrief || null;
+    state.lineResults = c.lineResults || {};
+    state.hiddenCheck = c.hiddenCheck || null;
+    state.onlyMine = !!c.onlyMine;
+    state.live = null;
+    state.liveView = null;
+    state.liveStatus = "idle";
+  }
+
   function load() {
     try {
       const raw = localStorage.getItem(LS);
-      if (!raw) return;
-      const data = JSON.parse(raw);
-      if (data.settings) state.settings = { ...state.settings, ...data.settings };
-      if (Array.isArray(data.messages)) state.messages = data.messages;
-      if (data.situation) state.situation = data.situation;
-      if (data.debrief) state.debrief = data.debrief;
-      if (data.mode) state.mode = data.mode;
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data.settings) state.settings = { ...state.settings, ...data.settings };
+        if (Array.isArray(data.chats) && data.chats.length) {
+          state.chats = data.chats;
+          const cur = data.chats.find((c) => c.id === data.currentId) || data.chats[0];
+          hydrateChat(cur);
+          return;
+        }
+      }
+      const old = localStorage.getItem(LS_OLD);
+      if (old) {
+        const data = JSON.parse(old);
+        if (data.settings) state.settings = { ...state.settings, ...data.settings };
+        const c = blankChat();
+        c.messages = data.messages || [];
+        c.situation = data.situation || null;
+        c.mode = data.mode || "text";
+        c.debrief = data.debrief || null;
+        const first = c.messages.find((m) => m.role === "user");
+        if (first) c.title = first.text.slice(0, 42);
+        state.chats = [c];
+        hydrateChat(c);
+        return;
+      }
     } catch {
       /* ignore bad local data */
     }
+    const c = blankChat();
+    state.chats = [c];
+    hydrateChat(c);
   }
 
   function save() {
     try {
+      snapshotChat();
       localStorage.setItem(
         LS,
         JSON.stringify({
           settings: state.settings,
-          messages: state.messages.slice(-40),
-          situation: state.situation,
-          debrief: state.debrief,
-          mode: state.mode,
+          chats: state.chats.slice(0, 40),
+          currentId: state.currentId,
         })
       );
     } catch {
@@ -79,9 +147,12 @@
 
   function renderChrome() {
     $("wordmark").textContent = UI.name;
-    $("tagline").textContent = UI.tagline;
     $("composer-input").placeholder = UI.inputPlaceholder;
-    $("btn-send").textContent = UI.send;
+    $("btn-send").setAttribute("aria-label", UI.send);
+    $("btn-dictate").setAttribute("aria-label", UI.dictate);
+    $("btn-new").textContent = UI.newChat;
+    $("label-chats").textContent = UI.chats;
+    $("enter-hint").textContent = UI.enterHint;
     $("btn-settings").textContent = UI.settings;
     $("btn-about").textContent = UI.about;
     $("chrome-warning").textContent = UI.chromeWarning;
@@ -94,24 +165,59 @@
     $("sel-formality").innerHTML = `
       <option value="Sie"${state.settings.formality === "Sie" ? " selected" : ""}>${esc(UI.formalitySie)}</option>
       <option value="du"${state.settings.formality === "du" ? " selected" : ""}>${esc(UI.formalityDu)}</option>`;
+    $("chips").hidden = state.messages.length > 0;
     $("chips").innerHTML = UI.chips
       .map((c) => `<button type="button" class="chip" data-chip="${esc(c.id)}">${esc(c.label)}</button>`)
+      .join("");
+  }
+
+  function renderSidebar() {
+    const list = $("chat-list");
+    list.innerHTML = state.chats
+      .map(
+        (c) => `<div class="chat-item${c.id === state.currentId ? " on" : ""}">
+          <button type="button" class="open" data-open="${esc(c.id)}">${esc(c.title || UI.untitled)}</button>
+          <button type="button" class="del" data-del="${esc(c.id)}" aria-label="${esc(UI.deleteChat)}">×</button>
+        </div>`
+      )
       .join("");
   }
 
   function renderMessages() {
     const box = $("thread");
     if (!state.messages.length) {
-      box.innerHTML = `<p class="empty">${esc(UI.emptyChat)}</p>`;
+      box.innerHTML = `<div class="hero"><h1>${esc(UI.tagline)}</h1><p>${esc(UI.emptyChat)}</p></div>`;
       return;
     }
+    const last = state.messages.length - 1;
     box.innerHTML = state.messages
-      .map((m) => {
-        if (m.role === "user") return `<div class="bubble me">${esc(m.text)}</div>`;
-        return `<div class="bubble bot">${esc(m.text)}${m.fallback ? `<div class="muted tiny">${esc(UI.fallbackNote)}</div>` : ""}</div>`;
+      .map((m, i) => {
+        if (m.role === "user") {
+          return `<div class="row-msg me"><div class="bubble me">${esc(m.text)}</div></div>`;
+        }
+        if (m.typing) {
+          return `<div class="row-msg"><div class="typing" aria-label="${esc(UI.writing)}"><i></i><i></i><i></i></div></div>`;
+        }
+        const follow =
+          i === last && state.situation
+            ? `<div class="follow">
+                <button type="button" class="chip" data-follow="live">${esc(UI.startLive)}</button>
+                <button type="button" class="chip" data-follow="hidden">${esc(UI.modes.hidden)}</button>
+                <button type="button" class="chip" data-follow="harder">${esc(UI.harder)}</button>
+              </div>`
+            : "";
+        return `<div class="row-msg">
+          <div class="bubble bot">${esc(m.text)}${m.fallback ? `<div class="muted tiny">${esc(UI.fallbackNote)}</div>` : ""}</div>
+          <div class="msg-actions">
+            <button type="button" data-copy="${i}">${esc(UI.copy)}</button>
+            ${i === last ? `<button type="button" data-retry="${i}">${esc(UI.retry)}</button>` : ""}
+          </div>
+          ${follow}
+        </div>`;
       })
       .join("");
-    box.scrollTop = box.scrollHeight;
+    const sc = document.querySelector(".scroll");
+    if (sc) sc.scrollTop = sc.scrollHeight;
   }
 
   function lineButtons(i, line) {
@@ -310,6 +416,8 @@
   function render() {
     renderMessages();
     renderCard();
+    renderSidebar();
+    $("chips").hidden = state.messages.length > 0;
     $("error").textContent = state.error;
     $("error").hidden = !state.error;
     if (state.mode === "live") bindLive();
@@ -320,7 +428,7 @@
     if (!message) return;
     state.error = "";
     state.messages.push({ role: "user", text: message });
-    state.messages.push({ role: "bot", text: UI.writing });
+    state.messages.push({ role: "bot", typing: true, text: "" });
     state.debrief = null;
     state.hiddenCheck = null;
     state.lineResults = {};
@@ -542,13 +650,169 @@
     };
   }
 
+  function growComposer() {
+    const el = $("composer-input");
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 128) + "px";
+  }
+
+  function lastUserText() {
+    for (let i = state.messages.length - 1; i >= 0; i--) {
+      if (state.messages[i].role === "user") return state.messages[i].text;
+    }
+    return "";
+  }
+
+  function newChat() {
+    stopLive();
+    snapshotChat();
+    const empty = state.chats.find((c) => !c.messages.length);
+    if (empty) {
+      hydrateChat(empty);
+    } else {
+      const c = blankChat();
+      state.chats.unshift(c);
+      hydrateChat(c);
+    }
+    save();
+    render();
+    $("composer-input").focus();
+  }
+
+  function openChat(id) {
+    if (id === state.currentId) return;
+    stopLive();
+    snapshotChat();
+    const c = state.chats.find((x) => x.id === id);
+    if (!c) return;
+    hydrateChat(c);
+    save();
+    render();
+  }
+
+  function deleteChat(id) {
+    stopLive();
+    state.chats = state.chats.filter((c) => c.id !== id);
+    if (!state.chats.length) {
+      const c = blankChat();
+      state.chats = [c];
+      hydrateChat(c);
+    } else if (state.currentId === id) {
+      hydrateChat(state.chats[0]);
+    }
+    save();
+    render();
+  }
+
   function bind() {
     $("form-composer").onsubmit = (e) => {
       e.preventDefault();
       const input = $("composer-input");
       const t = input.value;
       input.value = "";
+      growComposer();
       sendSituation(t);
+    };
+    $("composer-input").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        $("form-composer").requestSubmit();
+      }
+    });
+    $("composer-input").addEventListener("input", growComposer);
+    $("btn-dictate").onclick = () => {
+      if (!window.Speech.hasRecognition()) {
+        state.error = UI.chromeWarning;
+        render();
+        return;
+      }
+      if (state.dictating) {
+        window.Speech.stopRecognition();
+        state.dictating = false;
+        $("btn-dictate").classList.remove("on");
+        return;
+      }
+      state.dictating = true;
+      $("btn-dictate").classList.add("on");
+      window.Speech.listen({
+        lang: "hr-HR",
+        onresult: (text) => {
+          const el = $("composer-input");
+          el.value = (el.value ? el.value + " " : "") + text;
+          growComposer();
+        },
+        onerror: (ev) => {
+          state.dictating = false;
+          $("btn-dictate").classList.remove("on");
+          if (ev && ev.error === "not-allowed") {
+            state.error = UI.micDenied;
+            render();
+          }
+        },
+        onend: () => {
+          state.dictating = false;
+          $("btn-dictate").classList.remove("on");
+        },
+      });
+    };
+    $("btn-new").onclick = newChat;
+    $("btn-sidebar").onclick = () => {
+      document.body.classList.toggle("side-open");
+      $("sidebar-backdrop").hidden = !document.body.classList.contains("side-open");
+    };
+    $("sidebar-backdrop").onclick = () => {
+      document.body.classList.remove("side-open");
+      $("sidebar-backdrop").hidden = true;
+    };
+    $("chat-list").onclick = (e) => {
+      const open = e.target.closest("[data-open]");
+      const del = e.target.closest("[data-del]");
+      if (del) {
+        e.stopPropagation();
+        deleteChat(del.getAttribute("data-del"));
+        return;
+      }
+      if (open) {
+        openChat(open.getAttribute("data-open"));
+        document.body.classList.remove("side-open");
+        $("sidebar-backdrop").hidden = true;
+      }
+    };
+    $("thread").onclick = async (e) => {
+      const copy = e.target.closest("[data-copy]");
+      if (copy) {
+        const i = Number(copy.getAttribute("data-copy"));
+        const t = state.messages[i]?.text || "";
+        try {
+          await navigator.clipboard.writeText(t);
+          copy.textContent = UI.copied;
+          setTimeout(() => {
+            copy.textContent = UI.copy;
+          }, 1200);
+        } catch {
+          /* ignore */
+        }
+        return;
+      }
+      const retry = e.target.closest("[data-retry]");
+      if (retry) {
+        const t = lastUserText();
+        if (t) sendSituation(t);
+        return;
+      }
+      const follow = e.target.closest("[data-follow]");
+      if (!follow) return;
+      const a = follow.getAttribute("data-follow");
+      if (a === "live") startLive();
+      if (a === "hidden") {
+        state.mode = "hidden";
+        save();
+        render();
+      }
+      if (a === "harder") {
+        const title = state.situation ? `${state.situation.title_hr} (${UI.harder})` : UI.harder;
+        sendSituation(title);
+      }
     };
     $("chips").onclick = (e) => {
       const btn = e.target.closest("[data-chip]");

@@ -7,48 +7,64 @@
     <meta name="application-name" content="njemackuudzepu" />
     <meta name="apple-mobile-web-app-title" content="njemackuudzepu" />
     <meta name="description" content="Njemačku u džepu. Reci situaciju, pa govori." />
-    <meta name="theme-color" content="#1c1612" />
+    <meta name="theme-color" content="#090909" />
     <link rel="icon" href="/icon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/icon.svg" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Source+Serif+4:opsz,ital,wght@8..60,0,500;8..60,0,600;8..60,1,500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:opsz,ital,wght@8..60,0,500;8..60,0,600;8..60,1,500&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="/css/app.css" />
   </head>
   <body>
-    <div class="stripe" aria-hidden="true"></div>
-    <header class="top">
-      <p id="wordmark" class="wordmark">njemackuudzepu</p>
-      <nav>
-        <button type="button" id="btn-settings" class="ghost">Postavke</button>
-        <button type="button" id="btn-about" class="ghost">O aplikaciji</button>
-      </nav>
-    </header>
-
-    <main>
-      <p id="tagline" class="tagline"></p>
-      <p id="chrome-warning" class="banner" hidden></p>
-      <p id="error" class="banner bad" hidden></p>
-
-      <section id="thread" class="thread" aria-live="polite"></section>
-      <section id="card" class="card" hidden></section>
-
-      <form id="form-composer" class="composer">
-        <label class="sr" for="composer-input">Opiši situaciju</label>
-        <textarea id="composer-input" rows="2" required></textarea>
-        <button type="submit" id="btn-send" class="primary">Pošalji</button>
-      </form>
-
-      <div id="chips" class="chips"></div>
-      <div class="home-meta">
-        <label><span id="label-level"></span> <select id="sel-level"></select></label>
-        <label><span id="label-formality"></span> <select id="sel-formality"></select></label>
+    <div class="app">
+      <aside id="sidebar" class="sidebar">
+        <button type="button" id="btn-new" class="new-chat"></button>
+        <p class="side-kicker" id="label-chats"></p>
+        <div id="chat-list" class="chat-list"></div>
+      </aside>
+      <div class="stage">
+        <header class="top">
+          <button type="button" id="btn-sidebar" class="icon-btn" aria-label="Izbornik">
+            <span></span><span></span><span></span>
+          </button>
+          <p id="wordmark" class="wordmark">njemackuudzepu</p>
+          <nav>
+            <button type="button" id="btn-settings" class="ghost">Postavke</button>
+            <button type="button" id="btn-about" class="ghost">O aplikaciji</button>
+          </nav>
+        </header>
+        <main class="scroll">
+          <p id="chrome-warning" class="banner" hidden></p>
+          <p id="error" class="banner bad" hidden></p>
+          <section id="thread" class="thread" aria-live="polite"></section>
+          <section id="card" class="card" hidden></section>
+        </main>
+        <footer class="dock">
+          <div id="chips" class="chips"></div>
+          <form id="form-composer" class="composer">
+            <label class="sr" for="composer-input">Opiši situaciju</label>
+            <textarea id="composer-input" rows="1" required></textarea>
+            <button type="button" id="btn-dictate" class="icon-btn mic-btn" aria-label="Reci situaciju">
+              <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                <rect x="9" y="3" width="6" height="11" rx="3" fill="none" stroke="currentColor" stroke-width="1.8" />
+                <path d="M6 11a6 6 0 0 0 12 0M12 17v3" fill="none" stroke="currentColor" stroke-width="1.8" />
+              </svg>
+            </button>
+            <button type="submit" id="btn-send" class="send"></button>
+          </form>
+          <div class="home-meta">
+            <label><span id="label-level"></span> <select id="sel-level"></select></label>
+            <label><span id="label-formality"></span> <select id="sel-formality"></select></label>
+            <span id="enter-hint" class="hint"></span>
+          </div>
+        </footer>
       </div>
-    </main>
+    </div>
+    <div id="sidebar-backdrop" class="backdrop" hidden></div>
 
     <dialog id="dlg-settings">
       <form id="form-settings" method="dialog">

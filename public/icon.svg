@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="njemackuudzepu">
-  <rect width="64" height="64" fill="#f3e6c8"/>
-  <rect width="64" height="7" y="0" fill="#111"/>
-  <rect width="64" height="7" y="7" fill="#c41e3a"/>
-  <rect width="64" height="7" y="14" fill="#e6b422"/>
-  <text x="32" y="48" text-anchor="middle" font-size="22" font-family="IBM Plex Mono, ui-monospace, monospace" font-weight="700" fill="#1c1612" letter-spacing="-2">n</text>
+  <rect width="64" height="64" fill="#090909"/>
+  <rect width="64" height="4" y="0" fill="#e10600"/>
+  <text x="32" y="42" text-anchor="middle" font-size="28" font-family="Inter, system-ui, sans-serif" font-weight="500" fill="#f4f4f1" letter-spacing="-3">n</text>
 </svg>
