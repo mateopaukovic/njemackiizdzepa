@@ -164,10 +164,6 @@
     $("sel-formality").innerHTML = `
       <option value="Sie"${state.settings.formality === "Sie" ? " selected" : ""}>${esc(UI.formalitySie)}</option>
       <option value="du"${state.settings.formality === "du" ? " selected" : ""}>${esc(UI.formalityDu)}</option>`;
-    $("chips").hidden = state.messages.length > 0;
-    $("chips").innerHTML = UI.chips
-      .map((c) => `<button type="button" class="chip" data-chip="${esc(c.id)}">${esc(c.label)}</button>`)
-      .join("");
   }
 
   function renderSidebar() {
@@ -416,7 +412,6 @@
     renderMessages();
     renderCard();
     renderSidebar();
-    $("chips").hidden = state.messages.length > 0;
     $("error").textContent = state.error;
     $("error").hidden = !state.error;
     if (state.mode === "live") bindLive();
@@ -812,12 +807,6 @@
         const title = state.situation ? `${state.situation.title_hr} (${UI.harder})` : UI.harder;
         sendSituation(title);
       }
-    };
-    $("chips").onclick = (e) => {
-      const btn = e.target.closest("[data-chip]");
-      if (!btn) return;
-      const chip = UI.chips.find((c) => c.id === btn.getAttribute("data-chip"));
-      if (chip) sendSituation(chip.label);
     };
     $("sel-level").onchange = (e) => {
       state.settings.level = e.target.value;

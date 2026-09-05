@@ -21,7 +21,7 @@ Open [http://127.0.0.1:8000](http://127.0.0.1:8000) in Chrome (or Edge).
 
 If you run `npm start` inside WSL and Chrome on Windows, keep `HOST=0.0.0.0` (the default). A bind of `127.0.0.1` inside WSL is invisible to Windows Chrome.
 
-Without a key, handwritten dialogues and live scripts still work (chips + scoring + Razgovor).
+Without a key, handwritten dialogues and live scripts still work (typed situation + scoring + Razgovor).
 
 Health check: [http://127.0.0.1:8000/api/health](http://127.0.0.1:8000/api/health)
 
