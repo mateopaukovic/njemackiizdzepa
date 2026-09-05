@@ -1,6 +1,6 @@
 (function () {
   const UI = window.UI;
-  const LS = "njemackiizdzepa.v1";
+  const LS = "njemackuudzepu.v1";
 
   const state = {
     settings: {
