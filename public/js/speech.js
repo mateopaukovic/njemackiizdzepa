@@ -5,6 +5,8 @@ window.Speech = (function () {
   let currentRec = null;
   let speaking = false;
   let voicesReady = false;
+  let speechVersion = 0;
+  let settleSpeech = null;
 
   function hasRecognition() {
     return Boolean(SR);
@@ -40,6 +42,8 @@ window.Speech = (function () {
         currentRec.onresult = null;
         currentRec.onend = null;
         currentRec.onerror = null;
+        currentRec.onstart = null;
+        currentRec.onspeechend = null;
         currentRec.stop();
       } catch {
         /* already stopped */
@@ -49,7 +53,9 @@ window.Speech = (function () {
   }
 
   function cancelSpeak() {
+    speechVersion += 1;
     speaking = false;
+    if (settleSpeech) settleSpeech(false);
     if (synth) synth.cancel();
   }
 
@@ -61,26 +67,33 @@ window.Speech = (function () {
   function speak(text, opts = {}) {
     stopRecognition();
     cancelSpeak();
+    const version = speechVersion;
     const de = String(text || "").trim();
-    if (!de || !synth) return Promise.resolve();
+    if (!de || !synth) return Promise.resolve(false);
     return waitVoices().then(
       (voices) =>
         new Promise((resolve) => {
+          if (version !== speechVersion) return resolve(false);
           const u = new SpeechSynthesisUtterance(de);
           u.lang = "de-DE";
           const voice = pickDeVoice(voices);
           if (voice) u.voice = voice;
           u.rate = opts.slow ? Math.min(0.72, opts.rate || 0.7) : opts.rate || 1;
           u.pitch = 1;
-          const finish = () => {
+          let finished = false;
+          const finish = (completed) => {
+            if (finished) return;
+            finished = true;
+            if (settleSpeech === finish) settleSpeech = null;
             speaking = false;
-            resolve();
-            if (opts.onend) opts.onend();
+            resolve(completed);
+            if (completed && opts.onend) opts.onend();
           };
-          u.onend = finish;
-          u.onerror = finish;
+          settleSpeech = finish;
+          u.onend = () => finish(true);
+          u.onerror = () => finish(false);
           speaking = true;
-          synth.speak(u);
+          try { synth.speak(u); } catch { finish(false); }
         })
     );
   }
@@ -98,6 +111,12 @@ window.Speech = (function () {
     rec.interimResults = false;
     rec.maxAlternatives = 1;
     rec.continuous = false;
+    rec.onstart = () => {
+      if (currentRec === rec && opts.onstart) opts.onstart();
+    };
+    rec.onspeechend = () => {
+      if (currentRec === rec && opts.onspeechend) opts.onspeechend();
+    };
     rec.onresult = (ev) => {
       const text = ev.results?.[0]?.[0]?.transcript || "";
       if (opts.onresult) opts.onresult(text);

@@ -1,0 +1,98 @@
+{
+  "bank": {
+    "question_de": "Wofür möchten Sie das Konto hauptsächlich nutzen?",
+    "question_hr": "Za što uglavnom želite koristiti račun?",
+    "help_de": "Ich brauche das Konto, damit mein Arbeitgeber mein Gehalt überweisen kann.",
+    "help_hr": "Trebam račun kako bi mi poslodavac mogao uplaćivati plaću.",
+    "want": ["gehalt", "arbeitgeber", "überweisen", "uberweisen", "bezahlen"],
+    "goal_hr": "Objasniti za što trebaš račun."
+  },
+  "job": {
+    "question_de": "Warum möchten Sie gerade bei uns arbeiten?",
+    "question_hr": "Zašto želite raditi baš kod nas?",
+    "help_de": "Ich möchte bei Ihnen arbeiten, weil ich Erfahrung im Lager habe.",
+    "help_hr": "Želim raditi kod vas jer imam iskustva u skladištu.",
+    "want": ["weil", "erfahrung", "team", "lernen"],
+    "goal_hr": "Obrazložiti zašto želiš taj posao."
+  },
+  "doctor": {
+    "question_de": "Wann werden die Beschwerden stärker?",
+    "question_hr": "Kada tegobe postaju jače?",
+    "help_de": "Die Schmerzen werden stärker, wenn ich etwas esse oder trinke.",
+    "help_hr": "Bolovi postaju jači kada nešto jedem ili pijem.",
+    "want": ["wenn", "esse", "trinke", "nachts", "abends"],
+    "goal_hr": "Opisati kada se tegobe pogoršavaju."
+  },
+  "amt": {
+    "question_de": "Ihre Unterlagen sind unvollständig. Wann können Sie wiederkommen?",
+    "question_hr": "Dokumentacija je nepotpuna. Kada možete ponovno doći?",
+    "help_de": "Ich kann morgen wiederkommen, weil ich heute bis fünf arbeite.",
+    "help_hr": "Mogu ponovno doći sutra jer danas radim do pet.",
+    "want": ["morgen", "woche", "montag", "termin", "wiederkommen"],
+    "goal_hr": "Dogovoriti povratak s dokumentima koji nedostaju."
+  },
+  "landlord": {
+    "question_de": "Die Wohnung ist erst ab Mai frei. Wäre das möglich?",
+    "question_hr": "Stan je slobodan tek od svibnja. Bi li to bilo moguće?",
+    "help_de": "Das wäre möglich, wenn ich den Vertrag vorher unterschreiben kann.",
+    "help_hr": "To bi bilo moguće ako mogu ranije potpisati ugovor.",
+    "want": ["wenn", "vertrag", "mai", "möglich", "moglich", "leider"],
+    "goal_hr": "Odgovoriti na promjenu datuma useljenja."
+  },
+  "jobcenter": {
+    "question_de": "Was machen Sie, wenn Sie keine Antwort auf Ihre Bewerbungen bekommen?",
+    "question_hr": "Što radite ako ne dobijete odgovor na prijave?",
+    "help_de": "Wenn ich keine Antwort bekomme, rufe ich bei der Firma an.",
+    "help_hr": "Ako ne dobijem odgovor, nazovem tvrtku.",
+    "want": ["rufe", "anrufen", "frage", "bewerbung", "schreibe"],
+    "goal_hr": "Objasniti sljedeći korak u traženju posla."
+  },
+  "train": {
+    "question_de": "Ihr Zug fällt aus. Möchten Sie eine andere Verbindung suchen?",
+    "question_hr": "Vaš vlak je otkazan. Želite li potražiti drugu vezu?",
+    "help_de": "Ja, welche Verbindung kann ich mit meiner Fahrkarte nehmen?",
+    "help_hr": "Da, kojom vezom mogu putovati sa svojom kartom?",
+    "want": ["verbindung", "fahrkarte", "nächste", "nachste", "umsteigen"],
+    "goal_hr": "Pitati za alternativu kada je vlak otkazan."
+  },
+  "abh": {
+    "question_de": "Haben Sie noch eine Frage zu Ihren Unterlagen?",
+    "question_hr": "Imate li još pitanje o svojoj dokumentaciji?",
+    "help_de": "Können Sie mir bitte aufschreiben, welche Unterlagen noch fehlen?",
+    "help_hr": "Možete li mi zapisati koji dokumenti još nedostaju?",
+    "want": ["aufschreiben", "unterlagen", "fehlen", "liste"],
+    "goal_hr": "Zatražiti pisani popis dokumenata."
+  },
+  "kita": {
+    "question_de": "Im September ist leider kein Platz frei. Was wäre Ihre Alternative?",
+    "question_hr": "U rujnu nažalost nema slobodnog mjesta. Koja bi vam alternativa odgovarala?",
+    "help_de": "Können Sie uns vormerken, falls im Oktober ein Platz frei wird?",
+    "help_hr": "Možete li nas predbilježiti ako se u listopadu oslobodi mjesto?",
+    "want": ["vormerken", "warteliste", "oktober", "warten", "andere"],
+    "goal_hr": "Dogovoriti alternativu kada nema mjesta."
+  },
+  "neighbor": {
+    "question_de": "Am Samstag bekomme ich Besuch. Wäre etwas Musik für Sie okay?",
+    "question_hr": "U subotu imam goste. Bi li vam smetalo malo glazbe?",
+    "help_de": "Das ist in Ordnung, solange die Musik ab zehn leise ist.",
+    "help_hr": "To je u redu dok je glazba od deset tiha.",
+    "want": ["solange", "leise", "zehn", "ordnung", "ruhe"],
+    "goal_hr": "Pristojno dogovoriti uvjete za glazbu."
+  },
+  "parcel": {
+    "question_de": "Der Name auf dem Paket ist anders. Für wen ist es?",
+    "question_hr": "Ime na paketu je drukčije. Za koga je paket?",
+    "help_de": "Das Paket ist für meine Frau. Welche Vollmacht brauche ich?",
+    "help_hr": "Paket je za moju suprugu. Kakvu punomoć trebam?",
+    "want": ["vollmacht", "frau", "mann", "nachbar", "familie"],
+    "goal_hr": "Objasniti za koga preuzimaš paket i pitati za punomoć."
+  },
+  "emergency": {
+    "question_de": "Können Sie beschreiben, wie sich die Schmerzen anfühlen?",
+    "question_hr": "Možete li opisati kakvi su bolovi?",
+    "help_de": "Die Schmerzen sind stechend und werden stärker, wenn ich mich bewege.",
+    "help_hr": "Bolovi su probadajući i postaju jači kada se krećem.",
+    "want": ["stechend", "stark", "dumpf", "brennt", "bewege"],
+    "goal_hr": "Preciznije opisati bol."
+  }
+}

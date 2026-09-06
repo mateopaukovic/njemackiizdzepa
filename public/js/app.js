@@ -2,10 +2,14 @@
   const UI = window.UI;
   const LS = "njemackiudzepu.v2";
   const LS_OLD = ["njemackuudzepu.v2", "njemackuudzepu.v1", "njemackiizdzepa.v1"];
+  let generation = null;
+  let practiceVersion = 0;
+  let practiceRequest = null;
+  let lastThreadRender = "";
 
   const state = {
     settings: {
-      level: "A2",
+      level: "B1",
       formality: "Sie",
       rate: 1,
       autoMic: true,
@@ -27,6 +31,10 @@
     error: "",
     chromeOk: true,
     dictating: false,
+    failedRequest: null,
+    savedSentences: [],
+    reviewResults: {},
+    practice: null,
   };
 
   function esc(s) {
@@ -57,13 +65,15 @@
   function snapshotChat() {
     const c = state.chats.find((x) => x.id === state.currentId);
     if (!c) return;
-    c.messages = state.messages.slice(-40);
+    c.messages = state.messages.filter((m) => !m.typing).slice(-40);
     c.situation = state.situation;
     c.mode = state.mode;
     c.debrief = state.debrief;
     c.lineResults = state.lineResults;
     c.hiddenCheck = state.hiddenCheck;
     c.onlyMine = state.onlyMine;
+    c.failedRequest = state.failedRequest;
+    c.draft = $("composer-input").value;
     c.updatedAt = Date.now();
     const first = c.messages.find((m) => m.role === "user");
     if (first) c.title = first.text.slice(0, 42);
@@ -73,7 +83,7 @@
     state.currentId = c.id;
     state.messages = c.messages || [];
     state.situation = c.situation || null;
-    state.mode = c.mode || "text";
+    state.mode = c.mode === "hidden" ? "hidden" : "text";
     state.debrief = c.debrief || null;
     state.lineResults = c.lineResults || {};
     state.hiddenCheck = c.hiddenCheck || null;
@@ -81,6 +91,10 @@
     state.live = null;
     state.liveView = null;
     state.liveStatus = "idle";
+    state.failedRequest = c.failedRequest || null;
+    state.error = state.failedRequest ? UI.generationFailed : "";
+    $("composer-input").value = c.draft || state.failedRequest?.message || "";
+    growComposer();
   }
 
   function load() {
@@ -90,6 +104,14 @@
         const raw = localStorage.getItem(key);
         if (!raw) continue;
         const data = JSON.parse(raw);
+        if (Array.isArray(data.savedSentences)) {
+          const seen = new Set();
+          state.savedSentences = data.savedSentences.filter((line) => {
+            if (!line || typeof line.de !== "string" || !line.de.trim() || typeof line.hr !== "string" || seen.has(line.de)) return false;
+            seen.add(line.de);
+            return true;
+          }).slice(0, 100).map((line) => ({ de: line.de, hr: line.hr }));
+        }
         if (data.settings) state.settings = { ...state.settings, ...data.settings };
         if (Array.isArray(data.chats) && data.chats.length) {
           state.chats = data.chats;
@@ -127,10 +149,12 @@
           settings: state.settings,
           chats: state.chats.slice(0, 40),
           currentId: state.currentId,
+          savedSentences: state.savedSentences,
         })
       );
+      return true;
     } catch {
-      /* quota */
+      return false;
     }
   }
 
@@ -146,24 +170,19 @@
 
   function renderChrome() {
     $("wordmark").textContent = UI.name;
+    $("side-wordmark").textContent = UI.name;
     $("composer-input").placeholder = UI.inputPlaceholder;
     $("btn-send").setAttribute("aria-label", UI.send);
     $("btn-dictate").setAttribute("aria-label", UI.dictate);
-    $("btn-new").textContent = UI.newChat;
+    $("btn-new-label").textContent = UI.newChat;
+    $("btn-retry-failed").textContent = UI.retry;
     $("label-chats").textContent = UI.chats;
-    $("enter-hint").textContent = UI.enterHint;
-    $("btn-settings").textContent = UI.settings;
-    $("btn-about").textContent = UI.about;
+    $("btn-settings-label").textContent = UI.settings;
+    $("btn-about-label").textContent = UI.about;
+    $("btn-profile-label").textContent = UI.profile;
+    $("btn-profile-sub").textContent = UI.name;
     $("chrome-warning").textContent = UI.chromeWarning;
     $("chrome-warning").hidden = state.chromeOk;
-    $("label-level").textContent = UI.level;
-    $("label-formality").textContent = UI.formality;
-    $("sel-level").innerHTML = UI.levels
-      .map((l) => `<option value="${l}"${l === state.settings.level ? " selected" : ""}>${l}</option>`)
-      .join("");
-    $("sel-formality").innerHTML = `
-      <option value="Sie"${state.settings.formality === "Sie" ? " selected" : ""}>${esc(UI.formalitySie)}</option>
-      <option value="du"${state.settings.formality === "du" ? " selected" : ""}>${esc(UI.formalityDu)}</option>`;
   }
 
   function renderSidebar() {
@@ -180,8 +199,21 @@
 
   function renderMessages() {
     const box = $("thread");
+    const threadKey = state.currentId + JSON.stringify(state.messages);
+    const changed = lastThreadRender !== threadKey;
+    lastThreadRender = threadKey;
     if (!state.messages.length) {
-      box.innerHTML = `<div class="hero"><h1>${esc(UI.tagline)}</h1><p>${esc(UI.emptyChat)}</p></div>`;
+      const steps = (UI.heroSteps || [])
+        .map((s, i) => `<li><b>${i + 1}</b> ${esc(s)}</li>`)
+        .join("");
+      const examples = (UI.examples || [])
+        .map((t) => `<button type="button" class="example" data-example="${esc(t)}">${esc(t)}</button>`)
+        .join("");
+      box.innerHTML = `<div class="hero">
+        <p class="hero-lead">${esc(UI.heroLead)}</p>
+        <ol class="hero-steps">${steps}</ol>
+        <div class="hero-examples">${examples}</div>
+      </div>`;
       return;
     }
     const last = state.messages.length - 1;
@@ -193,26 +225,17 @@
         if (m.typing) {
           return `<div class="row-msg"><div class="typing" aria-label="${esc(UI.writing)}"><i></i><i></i><i></i></div></div>`;
         }
-        const follow =
-          i === last && state.situation
-            ? `<div class="follow">
-                <button type="button" class="chip" data-follow="live">${esc(UI.startLive)}</button>
-                <button type="button" class="chip" data-follow="hidden">${esc(UI.modes.hidden)}</button>
-                <button type="button" class="chip" data-follow="harder">${esc(UI.harder)}</button>
-              </div>`
-            : "";
         return `<div class="row-msg">
           <div class="bubble bot">${esc(m.text)}${m.fallback ? `<div class="muted tiny">${esc(UI.fallbackNote)}</div>` : ""}</div>
           <div class="msg-actions">
             <button type="button" data-copy="${i}">${esc(UI.copy)}</button>
             ${i === last ? `<button type="button" data-retry="${i}">${esc(UI.retry)}</button>` : ""}
           </div>
-          ${follow}
         </div>`;
       })
       .join("");
     const sc = document.querySelector(".scroll");
-    if (sc) sc.scrollTop = sc.scrollHeight;
+    if (sc && changed && state.panel === "home") sc.scrollTop = sc.scrollHeight;
   }
 
   function lineButtons(i, line) {
@@ -221,7 +244,75 @@
         <button type="button" data-act="play" data-i="${i}">${esc(UI.play)}</button>
         ${line.role === "you" ? `<button type="button" class="primary" data-act="recite" data-i="${i}">${esc(UI.recite)}</button>` : ""}
         <button type="button" data-act="slow" data-i="${i}">${esc(UI.slow)}</button>
+        <button type="button" data-act="save" data-i="${i}" aria-pressed="${state.savedSentences.some((saved) => saved.de === line.de)}">${esc(state.savedSentences.some((saved) => saved.de === line.de) ? UI.sentenceSaved : UI.saveSentence)}</button>
       </div>`;
+  }
+
+  function practiceStatus(target) {
+    const status = state.practice?.target === target ? state.practice : null;
+    return `<p id="${target}-status" class="practice-status ${esc(status?.kind || "")}" role="status" aria-live="polite">${esc(status?.text || "")}</p>
+      <button type="button" id="${target}-stop" data-stop-practice ${status?.active ? "" : "hidden"}>${esc(UI.stop)}</button>`;
+  }
+
+  function setPracticeStatus(target, text, kind = "", active = false) {
+    const previous = state.practice?.target;
+    if (previous && previous !== target) {
+      if ($(`${previous}-status`)) $(`${previous}-status`).textContent = "";
+      if ($(`${previous}-stop`)) $(`${previous}-stop`).hidden = true;
+    }
+    state.practice = text ? { target, text, kind, active } : null;
+    const el = $(`${target}-status`);
+    if (el) {
+      el.textContent = text;
+      el.className = "practice-status " + kind;
+    }
+    if ($(`${target}-stop`)) $(`${target}-stop`).hidden = !active;
+  }
+
+  function renderResult(res) {
+    if (!res) return "";
+    return `<div class="result">
+      <p>${esc(UI.heard)} <em>${esc(res.heard)}</em></p>
+      <p>${esc(UI.score)}: <strong>${res.score}%</strong></p>
+      <p class="muted tiny">${esc(UI.scoreExplanation)}</p>
+      <p class="band ${esc(res.band)}">${esc(res.note)}</p>
+      ${renderDiffs(res.diffs)}
+    </div>`;
+  }
+
+  function renderReview() {
+    $("review").innerHTML = `<h2 id="review-title">${esc(UI.review)}</h2>
+      <p class="muted">${esc(UI.reviewLocal)}</p>
+      <button type="button" id="btn-review-back">${esc(UI.backToPractice)}</button>
+      ${state.savedSentences.length ? state.savedSentences.map((line, i) => `<article class="line">
+        <p class="de">${esc(line.de)}</p><p class="hr">${esc(line.hr)}</p>
+        <div class="line-actions">
+          <button type="button" data-review-act="play" data-i="${i}">${esc(UI.play)}</button>
+          <button type="button" data-review-act="recite" data-i="${i}">${esc(UI.recite)}</button>
+          <button type="button" data-review-act="remove" data-i="${i}">${esc(UI.removeSentence)}</button>
+        </div>
+        ${practiceStatus(`review-${i}`)}
+        ${renderResult(state.reviewResults[i])}
+      </article>`).join("") : `<p>${esc(UI.reviewEmpty)}</p>`}`;
+  }
+
+  function toggleSaved(line) {
+    if (!line) return;
+    const previous = state.savedSentences;
+    const exists = previous.some((saved) => saved.de === line.de);
+    if (!exists && previous.length >= 100) {
+      state.error = UI.reviewFull;
+      render();
+      return;
+    }
+    stopLive();
+    state.savedSentences = exists ? previous.filter((saved) => saved.de !== line.de) : [...previous, { de: line.de, hr: line.hr }];
+    state.reviewResults = {};
+    if (!save()) {
+      state.savedSentences = previous;
+      state.error = UI.storageFull;
+    } else state.error = "";
+    render();
   }
 
   function renderDiffs(diff) {
@@ -238,6 +329,9 @@
 
   function renderCard() {
     const host = $("card");
+    const openHelp = new Set(Array.from(host.querySelectorAll("details[data-help][open]"), (el) => el.getAttribute("data-help")));
+    const typedValue = $("typed-input")?.value || "";
+    const typedFocused = document.activeElement === $("typed-input");
     const s = state.situation;
     if (!s) {
       host.hidden = true;
@@ -250,13 +344,6 @@
     const mine = lines.filter((l) => l.role === "you");
     const visibleLines = state.onlyMine ? mine : lines;
 
-    const modes = ["text", "hidden", "live"]
-      .map((m) => {
-        const label = UI.modes[m];
-        return `<button type="button" class="mode${state.mode === m ? " on" : ""}" data-mode="${m}">${esc(label)}</button>`;
-      })
-      .join("");
-
     let body = "";
     if (state.mode === "live") {
       body = renderLive();
@@ -266,6 +353,7 @@
         <p class="muted">${esc(s.role_other_hr)} · ${esc(s.formality)} · ${esc(s.level)}</p>
         <button type="button" class="primary big" id="btn-hidden-talk">${esc(UI.recite)}</button>
         <button type="button" id="btn-free">${esc(UI.freeTalk)}</button>
+        ${practiceStatus("hidden-practice")}
         ${state.hiddenCheck ? renderCoach(state.hiddenCheck) : ""}`;
     } else {
       const list = (state.onlyMine ? mine : visibleLines)
@@ -278,25 +366,17 @@
             <p class="de">${esc(line.de)}</p>
             <p class="hr">${esc(line.hr)}</p>
             ${lineButtons(idx, line)}
-            ${
-              res
-                ? `<div class="result">
-                    <p>${esc(UI.heard)} <em>${esc(res.heard)}</em></p>
-                    <p>${esc(UI.score)}: <strong>${res.score}</strong></p>
-                    <p class="band ${res.band}">${esc(res.note)}</p>
-                    ${renderDiffs(res.diffs)}
-                  </div>`
-                : ""
-            }
+            ${practiceStatus(`line-${idx}`)}
+            ${renderResult(res)}
           </article>`;
         })
         .join("");
       body = `
         <p class="goal"><strong>${esc(UI.goal)}.</strong> ${esc(s.goal_hr)}</p>
-        <div class="vocab"><div class="kicker">${esc(UI.vocab)}</div>${(s.vocab || [])
+        <details class="practice-help" data-help="vocab" ${openHelp.has("vocab") ? "open" : ""}><summary>${esc(UI.vocab)}</summary><div class="vocab">${(s.vocab || [])
           .map((v) => `<span><b>${esc(v.de)}</b> ${esc(v.hr)}</span>`)
-          .join("")}</div>
-        <div class="tips"><div class="kicker">${esc(UI.tips)}</div><ul>${(s.tips_hr || []).map((t) => `<li>${esc(t)}</li>`).join("")}</ul></div>
+          .join("")}</div></details>
+        <details class="practice-help" data-help="tips" ${openHelp.has("tips") ? "open" : ""}><summary>${esc(UI.tips)}</summary><ul>${(s.tips_hr || []).map((t) => `<li>${esc(t)}</li>`).join("")}</ul></details>
         ${state.mode === "text" && !state.onlyMine ? `<button type="button" id="btn-hide">${esc(UI.hideScript)}</button>` : ""}
         ${state.onlyMine ? `<h3>${esc(UI.yourLines)}</h3>` : ""}
         ${showLines || state.onlyMine ? list : ""}`;
@@ -306,11 +386,17 @@
       <header class="card-head">
         <h2>${esc(s.title_de)}</h2>
         <p class="hr">${esc(s.title_hr)} · ${esc(s.role_other_hr)}</p>
-        <div class="modes" role="tablist">${modes}</div>
         ${state.mode !== "live" ? `<button type="button" class="primary" id="btn-start-live">${esc(UI.startLive)}</button>` : ""}
       </header>
+      <nav class="mode-controls" aria-label="${esc(UI.practiceModes)}">
+        ${Object.entries(UI.modes).map(([mode, label]) => `<button type="button" data-mode="${mode}" aria-pressed="${state.mode === mode}" ${generation ? "disabled" : ""}>${esc(label)}</button>`).join("")}
+      </nav>
       ${body}
       ${renderDebrief()}`;
+    if ($("typed-input")) {
+      $("typed-input").value = typedValue;
+      if (typedFocused && !$("typed-input").disabled) $("typed-input").focus();
+    }
   }
 
   function renderCoach(coach) {
@@ -319,7 +405,7 @@
     return `<div class="coach">
       ${coach.heard ? `<p>${esc(UI.heard)} <em>${esc(coach.heard)}</em></p>` : ""}
       ${notes ? `<ul>${notes}</ul>` : ""}
-      ${coach.say_this_now_de ? `<p class="say">${esc(UI.sayThis)} <button type="button" class="link" data-act="say-now">${esc(coach.say_this_now_de)}</button></p>` : ""}
+      ${coach.say_this_now_de ? `<p class="say">${esc(UI.sayThis)} <button type="button" class="link" data-act="say-now" ${state.mode === "live" && (state.liveView?.busy || state.liveView?.paused || state.liveView?.complete) ? "disabled" : ""}>${esc(coach.say_this_now_de)}</button></p>` : ""}
       ${coach.corrected_de && coach.corrected_de !== coach.say_this_now_de ? `<p class="de">${esc(coach.corrected_de)}</p>` : ""}
     </div>`;
   }
@@ -327,11 +413,17 @@
   function renderLive() {
     const v = state.liveView || { lastBot: { de: "", hr: "" }, lastCoach: null };
     const st = state.liveStatus;
+    const complete = !!v.complete;
+    const disabled = v.busy || v.paused || complete ? "disabled" : "";
     const statusText =
-      st === "listening"
+      complete ? UI.sceneEnd : st === "error" ? UI.genericError
+        : st === "preparing" ? UI.preparingMic
+        : st === "processing" ? UI.processing
+        : st.startsWith("speech-") ? (UI.speechErrors[st.slice(7)] || UI.speechFailed)
+        : st === "listening"
         ? UI.listening
         : st === "mic-denied"
-          ? UI.micDenied
+          ? UI.speechErrors["not-allowed"]
           : st === "paused"
             ? UI.pause
             : st === "thinking"
@@ -351,19 +443,19 @@
         </details>
       </div>
       ${renderCoach(v.lastCoach)}
-      <p class="status ${esc(st)}">${esc(statusText)}</p>
+      <p class="status ${esc(st)}" role="status" aria-live="polite">${esc(statusText)}</p>
       <div class="live-controls">
-        <button type="button" class="mic" id="btn-answer">${esc(UI.answer)}</button>
-        <button type="button" id="btn-live-pause">${esc(paused ? UI.resume : UI.pause)}</button>
-        <button type="button" data-live="repeat">${esc(UI.repeat)}</button>
-        <button type="button" data-live="help">${esc(UI.help)}</button>
-        <button type="button" data-live="huh">${esc(UI.dontUnderstand)}</button>
-        <button type="button" data-live="done">${esc(UI.done)}</button>
+        <button type="button" class="mic" id="btn-answer" ${disabled}>${esc(UI.answer)}</button>
+        <button type="button" id="btn-live-pause" ${complete ? "disabled" : ""}>${esc(paused ? UI.resume : UI.pause)}</button>
+        <button type="button" data-live="repeat" ${disabled}>${esc(UI.repeat)}</button>
+        <button type="button" data-live="help" ${disabled}>${esc(UI.help)}</button>
+        <button type="button" data-live="huh" ${disabled}>${esc(UI.dontUnderstand)}</button>
+        <button type="button" data-live="done" ${complete ? "disabled" : ""}>${esc(UI.done)}</button>
       </div>
       <form id="typed-form" class="typed">
         <label>${esc(UI.typeFallback)}</label>
-        <input id="typed-input" autocomplete="off" />
-        <button type="submit">${esc(UI.send)}</button>
+        <input id="typed-input" autocomplete="off" maxlength="2000" ${disabled} />
+        <button type="submit" ${disabled}>${esc(UI.send)}</button>
       </form>`;
   }
 
@@ -383,17 +475,9 @@
 
   function renderSettings() {
     $("dlg-settings-title").textContent = UI.settings;
-    $("set-level-label").textContent = UI.level;
-    $("set-form-label").textContent = UI.formality;
     $("set-rate-label").textContent = UI.voiceSpeed;
     $("set-mic-label").textContent = UI.autoMic;
     $("set-voice-label").textContent = UI.correctAloud;
-    $("set-level").innerHTML = UI.levels
-      .map((l) => `<option value="${l}"${l === state.settings.level ? " selected" : ""}>${l}</option>`)
-      .join("");
-    $("set-form").innerHTML = `
-      <option value="Sie"${state.settings.formality === "Sie" ? " selected" : ""}>${esc(UI.formalitySie)}</option>
-      <option value="du"${state.settings.formality === "du" ? " selected" : ""}>${esc(UI.formalityDu)}</option>`;
     $("set-rate").value = state.settings.rate;
     $("set-mic").checked = state.settings.autoMic;
     $("set-voice").checked = state.settings.voiceCorrect;
@@ -412,16 +496,44 @@
     renderMessages();
     renderCard();
     renderSidebar();
-    $("error").textContent = state.error;
+    renderReview();
+    const review = state.panel === "review";
+    $("review").hidden = !review;
+    $("thread").hidden = review;
+    $("card").hidden = review || !state.situation;
+    document.querySelector(".dock").hidden = review;
+    $("btn-review-label").textContent = `${UI.review} (${state.savedSentences.length})`;
+    $("btn-review").setAttribute("aria-pressed", String(review));
+    $("error-message").textContent = state.error;
     $("error").hidden = !state.error;
+    $("btn-retry-failed").hidden = review || !state.failedRequest || !!generation;
+    $("btn-send").disabled = !!generation;
+    $("card").querySelectorAll("button, input").forEach((el) => {
+      if (generation) el.disabled = true;
+    });
     if (state.mode === "live") bindLive();
   }
 
-  async function sendSituation(text) {
+  function cancelGeneration() {
+    if (!generation) return;
+    generation.abort();
+    generation = null;
+    state.messages = state.messages.filter((m) => !m.typing);
+  }
+
+  async function sendSituation(text, extra = {}, retry = false) {
     const message = (text || "").trim();
     if (!message) return;
+    cancelGeneration();
+    stopLive();
+    state.mode = "text";
+    state.panel = "home";
+    const request = new AbortController();
+    const chatId = state.currentId;
+    generation = request;
     state.error = "";
-    state.messages.push({ role: "user", text: message });
+    state.failedRequest = null;
+    if (!retry || lastUserText() !== message) state.messages.push({ role: "user", text: message });
     state.messages.push({ role: "bot", typing: true, text: "" });
     state.debrief = null;
     state.hiddenCheck = null;
@@ -429,7 +541,8 @@
     state.onlyMine = false;
     render();
     try {
-      const data = await window.Chat.generateSituation(message, state.settings);
+      const data = await window.Chat.generateSituation(message, state.settings, extra, request.signal);
+      if (generation !== request || state.currentId !== chatId) return;
       state.messages.pop();
       state.messages.push({
         role: "bot",
@@ -439,96 +552,153 @@
       state.situation = data.situation;
       state.mode = "text";
       save();
-    } catch {
+    } catch (error) {
+      if (generation !== request || state.currentId !== chatId || error.name === "AbortError") return;
       state.messages.pop();
-      state.error = UI.serverDown;
+      state.failedRequest = { message, extra };
+      state.error = error.status === 400 ? UI.invalidInput : UI.generationFailed;
+      if (!$("composer-input").value) {
+        $("composer-input").value = message;
+        growComposer();
+      }
+      save();
     }
+    generation = null;
     render();
   }
 
-  async function playLine(i, slow) {
-    const line = state.situation?.lines?.[i];
+  async function playLine(i, slow, review = false) {
+    const line = review ? state.savedSentences[i] : state.situation?.lines?.[i];
     if (!line) return;
-    window.Speech.stopAll();
-    await window.Speech.speak(line.de, { rate: state.settings.rate, slow: !!slow });
+    stopLive();
+    const version = practiceVersion;
+    const target = `${review ? "review" : "line"}-${i}`;
+    setPracticeStatus(target, UI.play, "", true);
+    const completed = await window.Speech.speak(line.de, { rate: state.settings.rate, slow: !!slow });
+    if (version !== practiceVersion) return;
+    setPracticeStatus(target, completed ? "" : UI.voiceFailed, completed ? "" : "error");
   }
 
-  async function reciteLine(i) {
-    const line = state.situation?.lines?.[i];
+  async function reciteLine(i, review = false) {
+    const line = review ? state.savedSentences[i] : state.situation?.lines?.[i];
     if (!line) return;
+    stopLive();
+    const target = `${review ? "review" : "line"}-${i}`;
     if (!window.Speech.hasRecognition()) {
-      state.error = UI.chromeWarning;
-      render();
+      setPracticeStatus(target, UI.chromeWarning, "error");
       return;
     }
-    await playLine(i, false);
-    setLiveStatusLabel(i, UI.listening);
+    const version = practiceVersion;
+    setPracticeStatus(target, UI.play, "", true);
+    const completed = await window.Speech.speak(line.de, { rate: state.settings.rate });
+    if (version !== practiceVersion) return;
+    if (!completed) {
+      setPracticeStatus(target, UI.voiceFailed, "error");
+      return;
+    }
+    listenForPractice(target, (heard) => {
+      const scored = window.Scoring.score(line.de, heard);
+      (review ? state.reviewResults : state.lineResults)[i] = { heard, ...scored };
+      save();
+      render();
+    });
+  }
+
+  function listenForPractice(target, onResult, lang = "de-DE") {
+    const version = practiceVersion;
+    let settled = false;
+    const current = () => version === practiceVersion;
+    const finishDictation = () => {
+      if (target !== "composer") return;
+      state.dictating = false;
+      $("btn-dictate").classList.remove("on");
+    };
+    setPracticeStatus(target, UI.preparingMic, "", true);
     window.Speech.listen({
-      onresult: (heard) => {
-        const scored = window.Scoring.score(line.de, heard);
-        state.lineResults[i] = { heard, ...scored };
-        save();
-        render();
+      lang,
+      onstart: () => {
+        if (current() && !settled) setPracticeStatus(target, UI.listening, "listening", true);
+      },
+      onspeechend: () => {
+        if (current() && !settled) setPracticeStatus(target, UI.processing, "", true);
+      },
+      onresult: async (heard) => {
+        if (!current() || settled) return;
+        settled = true;
+        window.Speech.stopRecognition();
+        finishDictation();
+        if (!heard.trim()) {
+          setPracticeStatus(target, UI.noSpeech, "error");
+          return;
+        }
+        setPracticeStatus(target, UI.processing, "", true);
+        try {
+          await onResult(heard);
+          if (current()) setPracticeStatus(target, target === "composer" ? "" : UI.practiceComplete);
+        } catch (error) {
+          if (!current() || error.name === "AbortError") return;
+          setPracticeStatus(target, UI.genericError, "error");
+        }
       },
       onerror: (ev) => {
-        if (ev && ev.error === "not-allowed") {
-          state.error = UI.micDenied;
-          render();
-        }
+        if (!current() || settled) return;
+        settled = true;
+        window.Speech.stopRecognition();
+        finishDictation();
+        setPracticeStatus(target, UI.speechErrors[ev?.error] || UI.speechFailed, "error");
+      },
+      onend: () => {
+        if (!current() || settled) return;
+        settled = true;
+        finishDictation();
+        setPracticeStatus(target, UI.noSpeech, "error");
       },
     });
   }
 
-  function setLiveStatusLabel(i, text) {
-    const el = document.querySelector(`.line[data-i="${i}"] .result`);
-    if (el) el.textContent = text;
-  }
-
   async function hiddenTalk() {
+    stopLive();
     if (!window.Speech.hasRecognition()) {
-      state.error = UI.chromeWarning;
-      render();
+      setPracticeStatus("hidden-practice", UI.chromeWarning, "error");
       return;
     }
-    window.Speech.stopAll();
-    window.Speech.listen({
-      onresult: async (heard) => {
-        try {
-          const data = await window.Chat.turn({
-            action: "check",
-            heard,
-            situation: state.situation,
-            level: state.settings.level,
-            formality: state.settings.formality,
-            step: 0,
-            misses: 0,
-            turn: 1,
-            history: [],
-          });
-          state.hiddenCheck = data.coach;
-          render();
-        } catch {
-          state.error = UI.genericError;
-          render();
-        }
-      },
-      onerror: (ev) => {
-        if (ev && ev.error === "not-allowed") {
-          state.error = UI.micDenied;
-          render();
-        }
-      },
+    const version = practiceVersion;
+    listenForPractice("hidden-practice", async (heard) => {
+      practiceRequest = new AbortController();
+      const data = await window.Chat.turn({
+        action: "check",
+        heard,
+        situation: state.situation,
+        level: state.settings.level,
+        formality: state.settings.formality,
+        step: 0,
+        misses: 0,
+        turn: 1,
+        history: [],
+      }, practiceRequest.signal);
+      if (version !== practiceVersion) return;
+      state.hiddenCheck = data.coach;
+      save();
+      render();
     });
   }
 
   function stopLive() {
+    if (state.practice) setPracticeStatus(state.practice.target, "");
+    practiceVersion += 1;
+    if (practiceRequest) practiceRequest.abort();
+    practiceRequest = null;
     if (state.live) state.live.stop();
+    window.Speech.stopAll();
+    state.dictating = false;
+    $("btn-dictate").classList.remove("on");
     state.live = null;
     state.liveView = null;
     state.liveStatus = "idle";
   }
 
   function startLive() {
+    if (!state.situation || generation) return;
     stopLive();
     state.mode = "live";
     state.debrief = null;
@@ -559,11 +729,15 @@
 
   function bindLive() {
     const answer = $("btn-answer");
-    if (answer) answer.onclick = () => state.live && state.live.listen();
+    if (answer) answer.onclick = () => {
+      stopDictation();
+      if (state.live) state.live.listen();
+    };
     const pause = $("btn-live-pause");
     if (pause)
       pause.onclick = () => {
         if (!state.live) return;
+        stopDictation();
         if (state.liveView?.paused) state.live.resume();
         else state.live.pause();
       };
@@ -592,14 +766,16 @@
 
   function bindCard() {
     $("card").onclick = async (e) => {
-      const modeBtn = e.target.closest("[data-mode]");
-      if (modeBtn) {
-        const m = modeBtn.getAttribute("data-mode");
-        if (m !== "live") stopLive();
-        state.mode = m;
-        state.onlyMine = false;
-        if (m === "live") startLive();
+      if (generation) return;
+      const modeButton = e.target.closest("[data-mode]");
+      if (modeButton) {
+        const mode = modeButton.getAttribute("data-mode");
+        if (mode === state.mode) return;
+        if (mode === "live") startLive();
         else {
+          stopLive();
+          state.mode = mode;
+          state.onlyMine = false;
           save();
           render();
         }
@@ -612,16 +788,28 @@
         if (a === "play") playLine(i, false);
         if (a === "slow") playLine(i, true);
         if (a === "recite") reciteLine(i);
+        if (a === "save") toggleSaved(state.situation?.lines?.[i]);
         if (a === "say-now") {
           const de = act.textContent;
-          window.Speech.speak(de, { rate: state.settings.rate });
+          if (state.live) state.live.say(de);
+          else {
+            stopLive();
+            window.Speech.speak(de, { rate: state.settings.rate });
+          }
         }
+        return;
+      }
+      if (e.target.closest("[data-stop-practice]")) {
+        const target = state.practice?.target;
+        stopLive();
+        if (target) setPracticeStatus(target, UI.stopped);
         return;
       }
       if (e.target.id === "btn-hidden-talk") hiddenTalk();
       if (e.target.id === "btn-start-live") startLive();
       if (e.target.id === "btn-free") startLive();
       if (e.target.id === "btn-hide") {
+        stopLive();
         state.mode = "hidden";
         save();
         render();
@@ -633,7 +821,7 @@
       }
       if (e.target.id === "btn-harder") {
         const title = state.situation ? `${state.situation.title_hr} (${UI.harder})` : UI.harder;
-        sendSituation(title);
+        sendSituation(title, { difficulty: "harder", chip: state.situation?.chip });
       }
       if (e.target.id === "btn-mine") {
         state.onlyMine = true;
@@ -650,6 +838,15 @@
     el.style.height = Math.min(el.scrollHeight, 128) + "px";
   }
 
+  function stopDictation() {
+    if (!state.dictating) return;
+    practiceVersion += 1;
+    window.Speech.stopRecognition();
+    state.dictating = false;
+    $("btn-dictate").classList.remove("on");
+    setPracticeStatus("composer", "");
+  }
+
   function lastUserText() {
     for (let i = state.messages.length - 1; i >= 0; i--) {
       if (state.messages[i].role === "user") return state.messages[i].text;
@@ -658,8 +855,10 @@
   }
 
   function newChat() {
+    cancelGeneration();
     stopLive();
     snapshotChat();
+    state.panel = "home";
     const empty = state.chats.find((c) => !c.messages.length);
     if (empty) {
       hydrateChat(empty);
@@ -674,9 +873,11 @@
   }
 
   function openChat(id) {
-    if (id === state.currentId) return;
+    if (id === state.currentId && state.panel === "home") return;
+    cancelGeneration();
     stopLive();
     snapshotChat();
+    state.panel = "home";
     const c = state.chats.find((x) => x.id === id);
     if (!c) return;
     hydrateChat(c);
@@ -685,7 +886,10 @@
   }
 
   function deleteChat(id) {
-    stopLive();
+    if (state.currentId === id) {
+      cancelGeneration();
+      stopLive();
+    }
     state.chats = state.chats.filter((c) => c.id !== id);
     if (!state.chats.length) {
       const c = blankChat();
@@ -721,43 +925,84 @@
         return;
       }
       if (state.dictating) {
-        window.Speech.stopRecognition();
-        state.dictating = false;
-        $("btn-dictate").classList.remove("on");
+        stopDictation();
+        setPracticeStatus("composer", UI.stopped);
         return;
       }
+      if (state.live) {
+        state.live.pause();
+        practiceVersion += 1;
+      }
+      else stopLive();
       state.dictating = true;
       $("btn-dictate").classList.add("on");
-      window.Speech.listen({
-        lang: "hr-HR",
-        onresult: (text) => {
-          const el = $("composer-input");
-          el.value = (el.value ? el.value + " " : "") + text;
-          growComposer();
-        },
-        onerror: (ev) => {
-          state.dictating = false;
-          $("btn-dictate").classList.remove("on");
-          if (ev && ev.error === "not-allowed") {
-            state.error = UI.micDenied;
-            render();
-          }
-        },
-        onend: () => {
-          state.dictating = false;
-          $("btn-dictate").classList.remove("on");
-        },
-      });
+      listenForPractice("composer", (text) => {
+        const el = $("composer-input");
+        el.value = (el.value ? el.value + " " : "") + text;
+        growComposer();
+      }, "hr-HR");
     };
-    $("btn-new").onclick = newChat;
+    function closeSidebar() {
+      document.body.classList.remove("side-open");
+      $("sidebar-backdrop").hidden = true;
+    }
+
+    function setProfileMenu(open) {
+      const menu = $("profile-menu");
+      const btn = $("btn-profile");
+      menu.hidden = !open;
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+      btn.classList.toggle("on", open);
+    }
+
+    $("btn-new").onclick = () => {
+      newChat();
+      closeSidebar();
+    };
+    $("btn-retry-failed").onclick = () => {
+      if (!state.failedRequest || generation) return;
+      const { message, extra } = state.failedRequest;
+      if ($("composer-input").value === message) {
+        $("composer-input").value = "";
+        growComposer();
+      }
+      sendSituation(message, extra, true);
+    };
+    $("btn-review").onclick = () => {
+      cancelGeneration();
+      stopLive();
+      if (state.mode === "live") state.mode = "text";
+      save();
+      state.panel = "review";
+      render();
+      closeSidebar();
+    };
+    $("review").onclick = (e) => {
+      if (e.target.id === "btn-review-back") {
+        stopLive();
+        state.panel = "home";
+        render();
+        return;
+      }
+      if (e.target.closest("[data-stop-practice]")) {
+        const target = state.practice?.target;
+        stopLive();
+        if (target) setPracticeStatus(target, UI.stopped);
+        return;
+      }
+      const act = e.target.closest("[data-review-act]");
+      if (!act) return;
+      const i = Number(act.getAttribute("data-i"));
+      const action = act.getAttribute("data-review-act");
+      if (action === "play") playLine(i, false, true);
+      if (action === "recite") reciteLine(i, true);
+      if (action === "remove") toggleSaved(state.savedSentences[i]);
+    };
     $("btn-sidebar").onclick = () => {
       document.body.classList.toggle("side-open");
       $("sidebar-backdrop").hidden = !document.body.classList.contains("side-open");
     };
-    $("sidebar-backdrop").onclick = () => {
-      document.body.classList.remove("side-open");
-      $("sidebar-backdrop").hidden = true;
-    };
+    $("sidebar-backdrop").onclick = closeSidebar;
     $("chat-list").onclick = (e) => {
       const open = e.target.closest("[data-open]");
       const del = e.target.closest("[data-del]");
@@ -768,8 +1013,7 @@
       }
       if (open) {
         openChat(open.getAttribute("data-open"));
-        document.body.classList.remove("side-open");
-        $("sidebar-backdrop").hidden = true;
+        closeSidebar();
       }
     };
     $("thread").onclick = async (e) => {
@@ -794,45 +1038,37 @@
         if (t) sendSituation(t);
         return;
       }
-      const follow = e.target.closest("[data-follow]");
-      if (!follow) return;
-      const a = follow.getAttribute("data-follow");
-      if (a === "live") startLive();
-      if (a === "hidden") {
-        state.mode = "hidden";
-        save();
-        render();
-      }
-      if (a === "harder") {
-        const title = state.situation ? `${state.situation.title_hr} (${UI.harder})` : UI.harder;
-        sendSituation(title);
-      }
+      const example = e.target.closest("[data-example]");
+      if (example) sendSituation(example.getAttribute("data-example"));
     };
-    $("sel-level").onchange = (e) => {
-      state.settings.level = e.target.value;
-      save();
-    };
-    $("sel-formality").onchange = (e) => {
-      state.settings.formality = e.target.value;
-      save();
+    $("btn-profile").onclick = (e) => {
+      e.stopPropagation();
+      setProfileMenu($("profile-menu").hidden);
     };
     $("btn-settings").onclick = () => {
+      setProfileMenu(false);
+      closeSidebar();
       renderSettings();
       $("dlg-settings").showModal();
     };
     $("btn-about").onclick = () => {
+      setProfileMenu(false);
+      closeSidebar();
       renderAbout();
       $("dlg-about").showModal();
     };
+    document.addEventListener("click", (e) => {
+      if ($("profile-menu").hidden) return;
+      if (!e.target.closest(".side-foot")) setProfileMenu(false);
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") setProfileMenu(false);
+    });
     $("form-settings").onsubmit = (e) => {
       e.preventDefault();
-      state.settings.level = $("set-level").value;
-      state.settings.formality = $("set-form").value;
       state.settings.rate = Number($("set-rate").value);
       state.settings.autoMic = $("set-mic").checked;
       state.settings.voiceCorrect = $("set-voice").checked;
-      $("sel-level").value = state.settings.level;
-      $("sel-formality").value = state.settings.formality;
       save();
       $("dlg-settings").close();
     };
@@ -843,6 +1079,8 @@
   }
 
   load();
+  state.settings.level = "B1";
+  state.settings.formality = "Sie";
   state.chromeOk = window.Speech.hasRecognition();
   renderChrome();
   renderSettings();

@@ -2,7 +2,7 @@
   "bank": {
     "title_de": "Konto eröffnen",
     "title_hr": "Otvaranje računa",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Otvoriti račun i dogovoriti što treba donijeti.",
     "role_other_hr": "Bankovna savjetnica",
@@ -19,7 +19,7 @@
     ],
     "lines": [
       { "role": "other", "de": "Guten Tag. Wie kann ich Ihnen helfen?", "hr": "Dobar dan. Kako vam mogu pomoći?" },
-      { "role": "you", "de": "Guten Tag. Ich möchte ein Konto eröffnen.", "hr": "Dobar dan. Želim otvoriti račun." },
+      { "role": "you", "de": "Guten Tag. Ich möchte ein Konto eröffnen, weil ich hier arbeite.", "hr": "Dobar dan. Želim otvoriti račun jer ovdje radim." },
       { "role": "other", "de": "Sehr gern. Haben Sie Ihren Ausweis dabei?", "hr": "Vrlo rado. Imate li osobnu iskaznicu kod sebe?" },
       { "role": "you", "de": "Ja, hier ist mein Ausweis.", "hr": "Da, evo moje osobne iskaznice." },
       { "role": "other", "de": "Möchten Sie ein Girokonto?", "hr": "Želite li tekući račun?" },
@@ -33,7 +33,7 @@
   "job": {
     "title_de": "Vorstellungsgespräch",
     "title_hr": "Razgovor za posao",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Predstaviti se, reći iskustvo i pitati za radno vrijeme.",
     "role_other_hr": "Poslodavac",
@@ -52,7 +52,7 @@
       { "role": "other", "de": "Guten Tag. Bitte setzen Sie sich.", "hr": "Dobar dan. Molim, sjednite." },
       { "role": "you", "de": "Guten Tag. Vielen Dank.", "hr": "Dobar dan. Hvala." },
       { "role": "other", "de": "Erzählen Sie kurz, warum Sie hier sind.", "hr": "Recite ukratko zašto ste ovdje." },
-      { "role": "you", "de": "Ich bewerbe mich als Lagerarbeiter.", "hr": "Prijavljujem se kao skladištar." },
+      { "role": "you", "de": "Ich bewerbe mich als Lagerarbeiter, weil ich bereits Erfahrung habe.", "hr": "Prijavljujem se kao skladištar jer već imam iskustva." },
       { "role": "other", "de": "Haben Sie Berufserfahrung?", "hr": "Imate li radno iskustvo?" },
       { "role": "you", "de": "Ja, ich habe zwei Jahre in einem Lager gearbeitet.", "hr": "Da, radio sam dvije godine u skladištu." },
       { "role": "other", "de": "Wann können Sie anfangen?", "hr": "Kad možete početi?" },
@@ -66,7 +66,7 @@
   "doctor": {
     "title_de": "Beim Arzt",
     "title_hr": "Kod liječnika",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Opisati simptome i pitati za bolovanje.",
     "role_other_hr": "Liječnica",
@@ -85,7 +85,7 @@
       { "role": "other", "de": "Guten Tag. Was fehlt Ihnen?", "hr": "Dobar dan. Što vam je?" },
       { "role": "you", "de": "Guten Tag. Ich habe Halsschmerzen und Fieber.", "hr": "Dobar dan. Imam bol u grlu i groznicu." },
       { "role": "other", "de": "Seit wann haben Sie die Beschwerden?", "hr": "Od kada imate tegobe?" },
-      { "role": "you", "de": "Seit drei Tagen.", "hr": "Od prije tri dana." },
+      { "role": "you", "de": "Ich habe die Beschwerden seit drei Tagen.", "hr": "Tegobe imam već tri dana." },
       { "role": "other", "de": "Haben Sie Husten?", "hr": "Imate li kašalj?" },
       { "role": "you", "de": "Ja, ein bisschen. Ich verstehe nicht ganz — was soll ich tun?", "hr": "Da, malo. Ne razumijem baš — što da radim?" },
       { "role": "other", "de": "Ruhe, viel trinken. Ich schaue mir den Hals an.", "hr": "Mir, puno piti. Pogledat ću grlo." },
@@ -97,7 +97,7 @@
   "amt": {
     "title_de": "Anmeldung im Bürgeramt",
     "title_hr": "Prijava boravišta / Amt",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Prijaviti boravište i znati koje papire trebaš.",
     "role_other_hr": "Službenica na Amtu",
@@ -116,11 +116,11 @@
       { "role": "other", "de": "Guten Tag. Haben Sie einen Termin?", "hr": "Dobar dan. Imate li termin?" },
       { "role": "you", "de": "Ja, ich habe um zehn Uhr einen Termin.", "hr": "Da, imam termin u deset." },
       { "role": "other", "de": "Wofür sind Sie hier?", "hr": "Zašto ste ovdje?" },
-      { "role": "you", "de": "Ich möchte mich anmelden.", "hr": "Želim se prijaviti (boravište)." },
+      { "role": "you", "de": "Ich möchte mich anmelden, weil ich gerade hierher gezogen bin.", "hr": "Želim se prijaviti (boravište)." },
       { "role": "other", "de": "Haben Sie Pass und Mietvertrag dabei?", "hr": "Imate li putovnicu i ugovor o najmu?" },
       { "role": "you", "de": "Ja, hier sind die Unterlagen.", "hr": "Da, evo papira." },
       { "role": "other", "de": "Seit wann wohnen Sie hier?", "hr": "Od kada ovdje stanujete?" },
-      { "role": "you", "de": "Seit dem ersten März. Wie bitte?", "hr": "Od prvog ožujka. Oprostite?" },
+      { "role": "you", "de": "Ich wohne seit dem ersten März hier. Wie bitte?", "hr": "Ovdje stanujem od prvog ožujka. Oprostite?" },
       { "role": "other", "de": "Bitte füllen Sie dieses Formular aus: Name, Adresse, Datum.", "hr": "Ispunite ovaj obrazac: ime, adresa, datum." },
       { "role": "you", "de": "Gut. Soll ich hier unterschreiben?", "hr": "Dobro. Trebam li ovdje potpisati?" }
     ]
@@ -128,7 +128,7 @@
   "landlord": {
     "title_de": "Wohnung besichtigen",
     "title_hr": "Stan / stanodavac",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Pitati za najamninu, troškove i kauciju.",
     "role_other_hr": "Stanodavac",
@@ -159,7 +159,7 @@
   "jobcenter": {
     "title_de": "Im Jobcenter",
     "title_hr": "Jobcenter",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Reći da tražiš posao i pitati koje papire donijeti.",
     "role_other_hr": "Savjetnik u Jobcenteru",
@@ -190,7 +190,7 @@
   "train": {
     "title_de": "Deutschlandticket kaufen",
     "title_hr": "Vlak / Deutschlandticket",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Kupiti kartu ili Deutschlandticket i znati gdje vrijedi.",
     "role_other_hr": "Blagajnica na kolodvoru",
@@ -209,8 +209,8 @@
       { "role": "other", "de": "Guten Tag. Wohin möchten Sie fahren?", "hr": "Dobar dan. Kamo želite ići?" },
       { "role": "you", "de": "Ich brauche ein Ticket nach München.", "hr": "Trebam kartu za München." },
       { "role": "other", "de": "Einfach oder hin und zurück?", "hr": "Samo tamo ili povratna?" },
-      { "role": "you", "de": "Einfach, bitte. Was ist das Deutschlandticket?", "hr": "Samo tamo. Što je Deutschlandticket?" },
-      { "role": "other", "de": "Für 58 Euro im Monat fahren Sie regional in ganz Deutschland.", "hr": "Za 58 eura mjesečno vozite regionalno po cijeloj Njemačkoj." },
+      { "role": "you", "de": "Ich brauche nur eine Hinfahrt, weil ich länger dort bleibe. Was ist das Deutschlandticket?", "hr": "Samo tamo. Što je Deutschlandticket?" },
+      { "role": "other", "de": "Den aktuellen Preis können Sie am Automaten nachsehen.", "hr": "Aktualnu cijenu možete provjeriti na automatu." },
       { "role": "you", "de": "Kann ich das hier kaufen?", "hr": "Mogu li to ovdje kupiti?" },
       { "role": "other", "de": "Ja, mit Ausweis. Möchten Sie das?", "hr": "Da, s iskaznicom. Želite li to?" },
       { "role": "you", "de": "Ja. Kann ich damit auch S-Bahn fahren?", "hr": "Da. Mogu li time i S-Bahn?" },
@@ -221,7 +221,7 @@
   "abh": {
     "title_de": "Aufenthaltserlaubnis",
     "title_hr": "Ausländerbehörde",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Reći zašto si tu i pitati što još treba donijeti.",
     "role_other_hr": "Službenik na Ausländerbehörde",
@@ -252,7 +252,7 @@
   "kita": {
     "title_de": "Kita-Platz anmelden",
     "title_hr": "Vrtić",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Prijaviti dijete i pitati za vrijeme, cijenu i papire.",
     "role_other_hr": "Voditeljica vrtića",
@@ -271,7 +271,7 @@
       { "role": "other", "de": "Guten Tag. Sie möchten einen Platz für Ihr Kind?", "hr": "Dobar dan. Želite mjesto za dijete?" },
       { "role": "you", "de": "Ja, für meine Tochter. Sie ist drei Jahre alt.", "hr": "Da, za kćer. Ima tri godine." },
       { "role": "other", "de": "Ab wann brauchen Sie den Platz?", "hr": "Od kada trebate mjesto?" },
-      { "role": "you", "de": "Ab September, ganztags.", "hr": "Od rujna, cijeli dan." },
+      { "role": "you", "de": "Wir brauchen ab September einen Ganztagsplatz, weil wir beide arbeiten.", "hr": "Od rujna trebamo cjelodnevni boravak jer oboje radimo." },
       { "role": "other", "de": "Die Betreuungszeit ist von sieben bis sechzehn Uhr.", "hr": "Čuvanje je od sedam do šesnaest." },
       { "role": "you", "de": "Was kostet das?", "hr": "Koliko to košta?" },
       { "role": "other", "de": "Das hängt vom Einkommen ab. Bitte das Formular ausfüllen.", "hr": "Ovisi o prihodu. Ispunite obrazac." },
@@ -283,30 +283,30 @@
   "neighbor": {
     "title_de": "Neue Nachbarn",
     "title_hr": "Susjedi",
-    "level": "A2",
-    "formality": "du",
+    "level": "B1",
+    "formality": "Sie",
     "goal_hr": "Predstaviti se, dogovoriti tišinu i pitati za smeće.",
     "role_other_hr": "Susjeda",
     "tips_hr": [
-      "Sa susjedima često du, ali kreni pristojno.",
+      "Pri prvom susretu koristi Sie dok se ne dogovorite drukčije.",
       "Ruhezeit: obično nakon 22 sata."
     ],
     "vocab": [
       { "de": "einziehen", "hr": "useliti se" },
       { "de": "leise", "hr": "tiho" },
       { "de": "der Müll", "hr": "smeće" },
-      { "de": "der gelbe Sack", "hr": "žuta vreća (ambalaza)" },
+      { "de": "der gelbe Sack", "hr": "žuta vreća (ambalaža)" },
       { "de": "die Nachbarin", "hr": "susjeda" }
     ],
     "lines": [
-      { "role": "other", "de": "Hallo, du bist neu hier, oder?", "hr": "Bok, novi si ovdje, zar ne?" },
+      { "role": "other", "de": "Guten Tag, Sie sind neu hier, oder?", "hr": "Dobar dan, novi ste ovdje, zar ne?" },
       { "role": "you", "de": "Ja, ich bin vor einer Woche eingezogen.", "hr": "Da, uselio sam se prije tjedan dana." },
-      { "role": "other", "de": "Willkommen! Ich wohne nebenan.", "hr": "Dobro došao! Stanujem do tebe." },
+      { "role": "other", "de": "Willkommen! Ich wohne nebenan.", "hr": "Dobro došli! Stanujem do vas." },
       { "role": "you", "de": "Freut mich. Ich heiße Ana.", "hr": "Drago mi je. Zovem se Ana." },
       { "role": "other", "de": "Eine Bitte: nach 22 Uhr bitte leise.", "hr": "Jedna molba: nakon 22 tiho." },
-      { "role": "you", "de": "Natürlich. Tut mir leid, wenn es laut war.", "hr": "Naravno. Oprosti ako je bilo glasno." },
-      { "role": "other", "de": "Kein Problem. Weißt du, wo der Müll ist?", "hr": "Nema frke. Znaš li gdje je smeće?" },
-      { "role": "you", "de": "Noch nicht. Kannst du das bitte wiederholen?", "hr": "Još ne. Možeš li to ponoviti?" },
+      { "role": "you", "de": "Natürlich. Tut mir leid, wenn es laut war.", "hr": "Naravno. Oprostite ako je bilo glasno." },
+      { "role": "other", "de": "Kein Problem. Wissen Sie, wo die Mülltonnen stehen?", "hr": "Nema problema. Znate li gdje su spremnici za otpad?" },
+      { "role": "you", "de": "Noch nicht. Können Sie das bitte wiederholen?", "hr": "Još ne. Možete li to ponoviti?" },
       { "role": "other", "de": "Gelber Sack, Restmüll, Biomüll — im Hof.", "hr": "Žuta vreća, ostalo, bio — u dvorištu." },
       { "role": "you", "de": "Danke. Wann kommt die Post?", "hr": "Hvala. Kad dolazi pošta?" }
     ]
@@ -314,10 +314,10 @@
   "parcel": {
     "title_de": "Paket abholen",
     "title_hr": "Paket u pošti / DHL",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Preuzeti paket s iskaznicom i kodom.",
-    "role_other_hr": "Šalter u Packstationu / pošti",
+    "role_other_hr": "Djelatnik u pošti",
     "tips_hr": [
       "Bez iskaznice često ne daju paket.",
       "Abholcode je na SMS-u ili u aplikaciji."
@@ -345,7 +345,7 @@
   "emergency": {
     "title_de": "In der Notaufnahme",
     "title_hr": "Hitna / Notaufnahme",
-    "level": "A2",
+    "level": "B1",
     "formality": "Sie",
     "goal_hr": "Reći što boli, od kad, i imaš li osiguranje.",
     "role_other_hr": "Sestra na trijaži",
@@ -364,13 +364,13 @@
       { "role": "other", "de": "Guten Tag. Was ist passiert?", "hr": "Dobar dan. Što se dogodilo?" },
       { "role": "you", "de": "Ich habe starke Schmerzen im Bauch.", "hr": "Imam jake bolove u trbuhu." },
       { "role": "other", "de": "Seit wann?", "hr": "Od kada?" },
-      { "role": "you", "de": "Seit heute Morgen.", "hr": "Od jutros." },
+      { "role": "you", "de": "Die Schmerzen haben heute Morgen angefangen.", "hr": "Bolovi su počeli jutros." },
       { "role": "other", "de": "Haben Sie eine Versicherungskarte?", "hr": "Imate li karticu osiguranja?" },
       { "role": "you", "de": "Ja, hier. Ich verstehe nicht ganz — muss ich warten?", "hr": "Da, evo. Ne razumijem baš — moram li čekati?" },
-      { "role": "other", "de": "Ja, bitte setzen Sie sich. Kommen Sie gleich dran.", "hr": "Da, sjednite. Uskoro ste na redu." },
+      { "role": "other", "de": "Ja, bitte setzen Sie sich. Sie kommen gleich dran.", "hr": "Da, sjednite. Uskoro ste na redu." },
       { "role": "you", "de": "Haben Sie Allergien? — Wie bitte, ich soll das sagen?", "hr": "Imate li alergije? — Oprostite, to ja trebam reći?" },
       { "role": "other", "de": "Ja: Allergien, Medikamente, Name.", "hr": "Da: alergije, lijekovi, ime." },
-      { "role": "you", "de": "Keine Allergien. Mein Name ist Marko Horvat.", "hr": "Nema alergija. Zovem se Marko Horvat." }
+      { "role": "you", "de": "Soweit ich weiß, habe ich keine Allergien. Mein Name ist Marko Horvat.", "hr": "Koliko znam, nemam alergija. Zovem se Marko Horvat." }
     ]
   }
 }

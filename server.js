@@ -25,10 +25,12 @@ const MIME = {
   ".png": "image/png",
   ".ico": "image/x-icon",
   ".txt": "text/plain; charset=utf-8",
+  ".woff2": "font/woff2",
 };
 
 const dialogues = JSON.parse(fs.readFileSync(path.join(ROOT, "data/dialogues.json"), "utf8"));
 const liveScripts = JSON.parse(fs.readFileSync(path.join(ROOT, "data/live-scripts.json"), "utf8"));
+const challenges = JSON.parse(fs.readFileSync(path.join(ROOT, "data/challenges.json"), "utf8"));
 const promptSystem = readPrompt("prompts/system.txt");
 const promptGenerate = readPrompt("prompts/generate-situation.txt");
 const promptTurn = readPrompt("prompts/live-turn.txt");
@@ -92,21 +94,112 @@ function readBody(req) {
     req.on("data", (c) => {
       size += c.length;
       if (size > 1e6) {
-        reject(new Error("body too large"));
-        req.destroy();
+        reject(httpError(413, "body_too_large"));
         return;
       }
       chunks.push(c);
     });
-    req.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+    req.on("end", () => {
+      if (size <= 1e6) resolve(Buffer.concat(chunks).toString("utf8"));
+    });
     req.on("error", reject);
   });
 }
 
+function httpError(status, message) {
+  return Object.assign(new Error(message), { status });
+}
+
+function object(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value);
+}
+
+function string(value, max = 2000, required = false) {
+  if (typeof value !== "string" || value.length > max || (required && !value.trim())) {
+    throw httpError(400, "invalid_input");
+  }
+  return value.trim();
+}
+
+function strings(value, maxItems = 16) {
+  if (!Array.isArray(value) || value.length > maxItems) throw httpError(400, "invalid_input");
+  return value.map((item) => string(item, 500));
+}
+
+function validateSituation(value) {
+  if (!object(value) || !Array.isArray(value.lines) || value.lines.length < 4 || value.lines.length > 40) {
+    throw httpError(400, "invalid_situation");
+  }
+  if (value.difficulty !== undefined && !["standard", "harder"].includes(value.difficulty)) {
+    throw httpError(400, "invalid_situation");
+  }
+  const result = {
+    title_de: string(value.title_de, 200, true),
+    title_hr: string(value.title_hr, 200, true),
+    goal_hr: string(value.goal_hr, 1000, true),
+    role_other_hr: string(value.role_other_hr, 200, true),
+    level: "B1",
+    formality: "Sie",
+    difficulty: value.difficulty === "harder" ? "harder" : "standard",
+    tips_hr: strings(value.tips_hr ?? []),
+    lines: value.lines.map((line) => {
+      if (!object(line) || !["you", "other"].includes(line.role)) throw httpError(400, "invalid_situation");
+      return { role: line.role, de: string(line.de, 1000, true), hr: string(line.hr, 1000, true) };
+    }),
+  };
+  if (value.chip !== undefined) {
+    if (typeof value.chip !== "string" || !Object.hasOwn(dialogues, value.chip)) throw httpError(400, "invalid_situation");
+    result.chip = value.chip;
+  }
+  if (!Array.isArray(value.vocab ?? []) || (value.vocab ?? []).length > 20) throw httpError(400, "invalid_situation");
+  result.vocab = (value.vocab ?? []).map((word) => {
+    if (!object(word)) throw httpError(400, "invalid_situation");
+    return { de: string(word.de, 200, true), hr: string(word.hr, 200, true) };
+  });
+  return result;
+}
+
+async function readRequest(req, endpoint) {
+  let body;
+  const raw = await readBody(req);
+  try { body = JSON.parse(raw); } catch { throw httpError(400, "invalid_json"); }
+  if (!object(body)) throw httpError(400, "invalid_input");
+  if (endpoint === "chat") {
+    const message = string(body.message ?? body.text, 2000, true);
+    const difficulty = body.difficulty ?? "standard";
+    if (!["standard", "harder"].includes(difficulty)) throw httpError(400, "invalid_input");
+    if (body.chip !== undefined && (typeof body.chip !== "string" || !Object.hasOwn(dialogues, body.chip))) {
+      throw httpError(400, "invalid_input");
+    }
+    return { message, difficulty, chip: body.chip };
+  }
+  const action = body.action ?? "heard";
+  if (!["start", "heard", "typed", "help", "dont_understand", "repeat", "done", "check", "free"].includes(action)) {
+    throw httpError(400, "invalid_action");
+  }
+  const result = { action, situation: validateSituation(body.situation), heard: string(body.heard ?? "") };
+  if (["heard", "typed", "check", "free"].includes(action) && !result.heard) throw httpError(400, "invalid_input");
+  for (const key of ["step", "misses", "turn"]) {
+    result[key] = body[key] ?? 0;
+    if (!Number.isSafeInteger(result[key]) || result[key] < 0 || result[key] > 1000) throw httpError(400, "invalid_input");
+  }
+  result.goal_progress = strings(body.goal_progress ?? []);
+  result.last_bot_de = string(body.last_bot_de ?? "");
+  result.last_bot_hr = string(body.last_bot_hr ?? "");
+  if (!Array.isArray(body.history ?? []) || (body.history ?? []).length > 12) throw httpError(400, "invalid_input");
+  result.history = (body.history ?? []).map((turn) => {
+    if (!object(turn)) throw httpError(400, "invalid_input");
+    return { bot: string(turn.bot), heard: string(turn.heard) };
+  });
+  return result;
+}
+
 function safeJoin(base, urlPath) {
-  const decoded = decodeURIComponent(urlPath.split("?")[0]);
+  let decoded;
+  try { decoded = decodeURIComponent(urlPath.split("?")[0]); }
+  catch { throw httpError(400, "invalid_path"); }
   const p = path.normalize(path.join(base, decoded));
-  if (!p.startsWith(base)) return null;
+  if (p !== base && !p.startsWith(base + path.sep)) return null;
   return p;
 }
 
@@ -176,18 +269,13 @@ function applyFormality(situation, formality) {
   return s;
 }
 
-function bumpLevel(level) {
-  return { A1: "A2", A2: "B1", B1: "B2", B2: "B2" }[level] || "B1";
-}
-
-function situationFromDialogue(id, level, formality) {
+function situationFromDialogue(id) {
   const src = dialogues[id] || dialogues.bank;
-  const s = applyFormality(src, formality || src.formality);
-  s.level = level || src.level || "A2";
+  const s = clone(src);
+  s.level = "B1";
   s.chip = id;
-  if (s.level === "B1" || s.level === "B2") {
-    s.tips_hr = [...(s.tips_hr || []), "Na višoj razini reci cijelu rečenicu, ne samo da/ne."];
-  }
+  s.formality = src.formality || "Sie";
+  s.tips_hr = [...(s.tips_hr || []), "Reci cijelu rečenicu, ne samo da/ne."];
   return s;
 }
 
@@ -213,7 +301,7 @@ function looksNonGerman(text) {
   const t = (text || "").trim();
   if (!t) return false;
   if (/[čćžšđČĆŽŠĐ]/.test(t)) return true;
-  const hr = /\b(da|ne|hvala|želim|zelim|imam|molim|dobro|što|sto|kako|zašto|zasto|račun|racun|liječnik|posao)\b/i;
+  const hr = /\b(ne|hvala|želim|zelim|imam|molim|dobro|što|sto|kako|zašto|zasto|račun|racun|liječnik|posao)\b/i;
   const en = /\b(i want|please|hello|my name|yes|thank you|doctor|account)\b/i;
   const de = /\b(ich|sie|du|haben|bin|ist|möchte|mochte|bitte|danke|und|nicht|ein|eine|der|die|das)\b/i;
   if (de.test(t)) return false;
@@ -228,11 +316,20 @@ function heardHits(heard, want) {
   return (want || []).some((w) => t.includes(w.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()));
 }
 
-function fallbackSituation(userText, level, formality) {
-  const id = matchChip(userText);
-  const situation = situationFromDialogue(id, level, formality);
+function fallbackSituation(userText, difficulty = "standard", chip) {
+  const id = chip || matchChip(userText);
+  const situation = situationFromDialogue(id);
+  situation.difficulty = difficulty;
+  if (difficulty === "harder") {
+    const challenge = challenges[id];
+    situation.lines.push(
+      { role: "other", de: challenge.question_de, hr: challenge.question_hr },
+      { role: "you", de: challenge.help_de, hr: challenge.help_hr });
+    situation.goal_hr += " " + challenge.goal_hr;
+    situation.tips_hr.push("Teža verzija: odgovori na dodatno pitanje punom rečenicom.");
+  }
   return {
-    chat_reply_hr: chatReplyFor(id),
+    chat_reply_hr: chatReplyFor(id) + (difficulty === "harder" ? " Dodano je zahtjevnije pitanje za vježbu." : ""),
     situation,
     source: "fallback",
   };
@@ -240,14 +337,26 @@ function fallbackSituation(userText, level, formality) {
 
 function questionAt(script, stepIndex) {
   if (stepIndex <= 0) return script.opening;
-  const prev = script.steps[stepIndex - 1];
+  const prev = script.steps[Math.min(stepIndex - 1, script.steps.length - 1)];
   return { de: prev.reply_de, hr: prev.reply_hr, ask: true };
 }
 
 function fallbackTurn(body) {
   const situation = body.situation || {};
   const chip = situation.chip || matchChip(`${situation.title_de || ""} ${situation.title_hr || ""} ${body.user_text || ""}`);
-  const script = liveScripts[chip] || liveScripts.bank;
+  const script = clone(liveScripts[chip] || liveScripts.bank);
+  if (situation.difficulty === "harder") {
+    const challenge = challenges[chip] || challenges.bank;
+    const previous = script.steps[script.steps.length - 2];
+    script.steps.splice(-1, 0, {
+      want: challenge.want, goal: challenge.goal_hr,
+      help_de: challenge.help_de, help_hr: challenge.help_hr,
+      reply_de: previous.reply_de, reply_hr: previous.reply_hr,
+    });
+    previous.reply_de = challenge.question_de;
+    previous.reply_hr = challenge.question_hr;
+    script.debrief_hr += " " + challenge.goal_hr;
+  }
   const action = body.action || "heard";
   const heard = (body.heard || "").trim();
   const stepIndex = Number(body.step || 0);
@@ -258,7 +367,7 @@ function fallbackTurn(body) {
   const wrap = (de) => applyFormalityToText(de, formality);
   const asked = questionAt(script, stepIndex);
 
-  if (action === "done") {
+  if (action === "done" || (stepIndex >= script.steps.length && action !== "start")) {
     return {
       in_character_de: wrap("Gut. Das war's. Einen schönen Tag!"),
       in_character_hr: "Dobro. To je to. Lijep dan!",
@@ -266,7 +375,9 @@ function fallbackTurn(body) {
       goal_progress: progress,
       coach: { heard, corrected_de: "", notes_hr: ["Gotovo. Pogledaj kratki pregled."], say_this_now_de: "" },
       scene_complete: true,
-      debrief_hr: script.debrief_hr,
+      debrief_hr: action === "done"
+        ? "Vježba je završena. " + (progress.length ? "Prepoznate stavke: " + progress.join(", ") + "." : "Još nema prepoznatih ciljeva. Možeš ponovno pokušati uz ponuđene primjere.")
+        : script.debrief_hr,
       step: stepIndex,
       misses: 0,
       source: "fallback",
@@ -348,22 +459,23 @@ function fallbackTurn(body) {
   }
 
   if (action === "check" || action === "free") {
-    const youLines = (situation.lines || []).filter((l) => l.role === "you").map((l) => l.de);
-    const hit = youLines.some((l) => heardHits(heard, l.split(/\s+/).slice(0, 4))) || heardHits(heard, current.want);
+    const matched = script.steps.filter((step) => heardHits(heard, step.want.filter((word) =>
+      !["ja", "nein", "bitte", "danke", "hier", "wie", "was", "kann", "nur", "nicht"].includes(word))));
+    const hit = !looksNonGerman(heard) && matched.length > 0;
     const notes = [];
     if (looksNonGerman(heard)) notes.push("Na njemačkom, ovako.");
-    else if (!hit) notes.push("Cilj još nije jasno rečen. Kratka rečenica, kao na šalteru.");
-    else notes.push("Super. Tako se kaže.");
+    else if (!hit) notes.push("Nisam prepoznao ključne riječi ove situacije. Odgovor ipak može biti ispravan.");
+    else notes.push("Prepoznate su ključne riječi situacije. Spremljena vježba ne provjerava gramatiku ni puno značenje.");
     const corrected = wrap(current.help_de);
     if (action === "check") {
       return {
         in_character_de: "",
         in_character_hr: "",
         ask: false,
-        goal_progress: hit ? [...new Set(progress.concat(current.goal))] : progress,
+        goal_progress: hit ? [...new Set(progress.concat(matched.map((step) => step.goal)))] : progress,
         coach: {
           heard,
-          corrected_de: corrected,
+          corrected_de: "",
           notes_hr: notes,
           say_this_now_de: corrected,
         },
@@ -396,9 +508,9 @@ function fallbackTurn(body) {
     };
   }
 
-  const ok = heardHits(heard, current.want) || (misses >= 2 && heard.length > 8);
+  const ok = heardHits(heard, current.want);
   if (!ok) {
-    const notes = ["Još nije to. Reci ovako:"];
+    const notes = ["Nisam prepoznao očekivane riječi. Pokušaj s ponuđenim primjerom."];
     if (misses >= 1) notes.push(current.help_hr);
     return {
       in_character_de: wrap(asked.de),
@@ -407,7 +519,7 @@ function fallbackTurn(body) {
       goal_progress: progress,
       coach: {
         heard,
-        corrected_de: wrap(current.help_de),
+        corrected_de: "",
         notes_hr: notes,
         say_this_now_de: wrap(current.help_de),
       },
@@ -429,8 +541,8 @@ function fallbackTurn(body) {
       goal_progress: [...new Set(progress)],
       coach: {
         heard,
-        corrected_de: wrap(current.help_de),
-        notes_hr: ["Super. Tako se kaže."],
+        corrected_de: "",
+        notes_hr: ["Prepoznate su očekivane riječi. Gramatika nije provjerena."],
         say_this_now_de: "",
       },
       scene_complete: true,
@@ -449,8 +561,8 @@ function fallbackTurn(body) {
     goal_progress: [...new Set(progress)],
     coach: {
       heard,
-      corrected_de: heard.length > 3 ? "" : wrap(current.help_de),
-      notes_hr: ["Super. Tako se kaže."],
+      corrected_de: "",
+      notes_hr: ["Prepoznate su očekivane riječi. Gramatika nije provjerena."],
       say_this_now_de: wrap(next.help_de),
     },
     scene_complete: false,
@@ -472,27 +584,24 @@ function parseJsonLoose(text) {
 }
 
 function validateSituationPayload(data, level, formality) {
-  if (!data || !data.situation || !Array.isArray(data.situation.lines) || data.situation.lines.length < 4) {
+  if (!object(data)) {
     throw new Error("bad situation");
   }
-  data.situation.level = data.situation.level || level;
-  data.situation.formality = data.situation.formality || formality;
-  data.chat_reply_hr = data.chat_reply_hr || "Evo dijaloga. Reci ga naglas.";
+  data.situation = validateSituation(data.situation);
+  data.chat_reply_hr = string(data.chat_reply_hr, 2000, true);
   data.source = "llm";
   return data;
 }
 
 function validateTurnPayload(data) {
-  if (!data || typeof data.in_character_de !== "string") throw new Error("bad turn");
-  data.coach = data.coach || {};
-  data.coach.heard = data.coach.heard || "";
-  data.coach.corrected_de = data.coach.corrected_de || "";
-  data.coach.notes_hr = Array.isArray(data.coach.notes_hr) ? data.coach.notes_hr : [];
-  data.coach.say_this_now_de = data.coach.say_this_now_de || "";
-  data.goal_progress = Array.isArray(data.goal_progress) ? data.goal_progress : [];
-  data.ask = data.ask !== false;
-  data.scene_complete = !!data.scene_complete;
-  data.debrief_hr = data.debrief_hr || "";
+  if (!object(data) || !object(data.coach) || typeof data.ask !== "boolean" || typeof data.scene_complete !== "boolean") throw new Error("bad turn");
+  data.in_character_de = string(data.in_character_de);
+  data.in_character_hr = string(data.in_character_hr);
+  for (const key of ["heard", "corrected_de", "say_this_now_de"]) data.coach[key] = string(data.coach[key]);
+  data.coach.notes_hr = strings(data.coach.notes_hr, 2);
+  data.goal_progress = strings(data.goal_progress);
+  data.debrief_hr = string(data.debrief_hr);
+  if (data.scene_complete) data.ask = false;
   data.source = "llm";
   return data;
 }
@@ -527,41 +636,38 @@ async function llmChat(messages, timeoutMs = 18000) {
 
 async function handleChat(body) {
   const userText = String(body.message || body.text || "").slice(0, 2000);
-  const level = body.level || "A2";
-  const formality = body.formality || "Sie";
-  const harder = !!body.harder;
-  const useLevel = harder ? bumpLevel(level) : level;
 
-  if (!userText) return fallbackSituation("banka", useLevel, formality);
+  if (!userText) return fallbackSituation("banka");
 
   if (XAI_API_KEY) {
     try {
       const userPrompt = promptGenerate
         .replaceAll("{{user_text}}", userText)
-        .replaceAll("{{level}}", useLevel)
-        .replaceAll("{{formality}}", formality);
+        .replaceAll("{{level}}", "B1")
+        .replaceAll("{{formality}}", "Sie") + (body.difficulty === "harder" ? "\nAdd a realistic complication and a response explaining a reason or an alternative. Keep B1 and Sie." : "");
       const content = await llmChat([
         { role: "system", content: promptSystem },
         { role: "user", content: userPrompt },
       ]);
-      const data = validateSituationPayload(parseJsonLoose(content), useLevel, formality);
-      data.situation.chip = matchChip(userText);
+      const data = validateSituationPayload(parseJsonLoose(content), "B1", "Sie");
+      data.situation.chip = body.chip || matchChip(userText);
+      data.situation.difficulty = body.difficulty || "standard";
       return data;
     } catch {
       // fall through to handwritten scripts — never leak provider errors to the UI
     }
   }
-  return fallbackSituation(userText, useLevel, formality);
+  return fallbackSituation(userText, body.difficulty, body.chip);
 }
 
 async function handleTurn(body) {
-  if (XAI_API_KEY && body.action !== "repeat") {
+  if (XAI_API_KEY && !["repeat", "done"].includes(body.action)) {
     try {
       const userPrompt = promptTurn
         .replaceAll("{{situation_json}}", JSON.stringify(body.situation || {}))
         .replaceAll("{{goal_hr}}", body.situation?.goal_hr || "")
-        .replaceAll("{{level}}", body.level || body.situation?.level || "A2")
-        .replaceAll("{{formality}}", body.formality || body.situation?.formality || "Sie")
+        .replaceAll("{{level}}", "B1")
+        .replaceAll("{{formality}}", body.situation?.formality || "Sie")
         .replaceAll("{{turn}}", String(body.turn || 1))
         .replaceAll("{{action}}", body.action || "heard")
         .replaceAll("{{heard}}", String(body.heard || ""))
@@ -571,6 +677,15 @@ async function handleTurn(body) {
         { role: "user", content: userPrompt },
       ]);
       const data = validateTurnPayload(parseJsonLoose(content));
+      data.coach.heard = body.heard || "";
+      if (body.action === "check") {
+        data.in_character_de = "";
+        data.in_character_hr = "";
+        data.ask = false;
+        data.scene_complete = false;
+      } else if (!data.in_character_de || (!data.scene_complete && !data.ask)) {
+        throw new Error("missing question");
+      }
       data.step = body.step;
       data.misses = body.misses;
       return data;
@@ -593,13 +708,13 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     if (req.method === "POST" && urlPath === "/api/chat") {
-      const body = JSON.parse((await readBody(req)) || "{}");
+      const body = await readRequest(req, "chat");
       const data = await handleChat(body);
       sendJson(res, 200, data);
       return;
     }
     if (req.method === "POST" && urlPath === "/api/turn") {
-      const body = JSON.parse((await readBody(req)) || "{}");
+      const body = await readRequest(req, "turn");
       const data = await handleTurn(body);
       sendJson(res, 200, data);
       return;
@@ -609,11 +724,15 @@ const server = http.createServer(async (req, res) => {
       return;
     }
     send(res, 405, "Method not allowed");
-  } catch {
-    sendJson(res, 500, { error: "server" });
+  } catch (error) {
+    sendJson(res, error.status || 500, { error: error.status ? error.message : "server" });
   }
 });
 
-server.listen(PORT, HOST, () => {
-  process.stdout.write(`njemackiudzepu http://${HOST}:${PORT}\n`);
-});
+if (require.main === module) {
+  server.listen(PORT, HOST, () => {
+    process.stdout.write(`njemackiudzepu http://${HOST}:${PORT}\n`);
+  });
+}
+
+module.exports = { server };

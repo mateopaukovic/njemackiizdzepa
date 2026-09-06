@@ -2,7 +2,7 @@
   "bank": {
     "opening": { "de": "Guten Tag. Wie kann ich Ihnen helfen?", "hr": "Dobar dan. Kako vam mogu pomoći?", "ask": true },
     "steps": [
-      { "want": ["konto", "eröffnen", "eroffnen", "giro", "konto eroffnen"], "goal": "račun", "help_de": "Ich möchte ein Konto eröffnen.", "help_hr": "Želim otvoriti račun.", "reply_de": "Sehr gern. Haben Sie Ihren Ausweis dabei?", "reply_hr": "Vrlo rado. Imate li osobnu iskaznicu kod sebe?" },
+      { "want": ["konto", "eröffnen", "eroffnen", "giro", "konto eroffnen"], "goal": "račun", "help_de": "Ich möchte ein Konto eröffnen, weil ich hier arbeite.", "help_hr": "Želim otvoriti račun jer ovdje radim.", "reply_de": "Sehr gern. Haben Sie Ihren Ausweis dabei?", "reply_hr": "Vrlo rado. Imate li osobnu iskaznicu kod sebe?" },
       { "want": ["ausweis", "pass", "ja", "hier"], "goal": "iskaznica", "help_de": "Ja, hier ist mein Ausweis.", "help_hr": "Da, evo moje osobne iskaznice.", "reply_de": "Möchten Sie ein Girokonto?", "reply_hr": "Želite li tekući račun?" },
       { "want": ["giro", "ja", "bitte", "konto"], "goal": "vrsta računa", "help_de": "Ja, bitte. Ein Girokonto.", "help_hr": "Da, molim. Tekući račun.", "reply_de": "Was ist Ihre Adresse?", "reply_hr": "Koja je vaša adresa?" },
       { "want": ["straße", "strasse", "wohne", "in der", "platz"], "goal": "adresa", "help_de": "Ich wohne in der Hauptstraße 12.", "help_hr": "Stanujem u Hauptstraße 12.", "reply_de": "Gut. Bitte unterschreiben Sie hier. Noch Fragen?", "reply_hr": "Dobro. Potpišite ovdje. Još pitanja?" },
@@ -13,7 +13,7 @@
   "job": {
     "opening": { "de": "Guten Tag. Bitte setzen Sie sich. Warum sind Sie hier?", "hr": "Dobar dan. Sjednite. Zašto ste ovdje?", "ask": true },
     "steps": [
-      { "want": ["bewerbe", "lager", "arbeit", "küche", "kuche", "stelle"], "goal": "razlog", "help_de": "Ich bewerbe mich als Lagerarbeiter.", "help_hr": "Prijavljujem se kao skladištar.", "reply_de": "Haben Sie Berufserfahrung?", "reply_hr": "Imate li radno iskustvo?" },
+      { "want": ["bewerbe", "lager", "arbeit", "küche", "kuche", "stelle"], "goal": "razlog", "help_de": "Ich bewerbe mich als Lagerarbeiter, weil ich bereits Erfahrung habe.", "help_hr": "Prijavljujem se kao skladištar jer već imam iskustva.", "reply_de": "Haben Sie Berufserfahrung?", "reply_hr": "Imate li radno iskustvo?" },
       { "want": ["jahr", "gearbeitet", "erfahrung", "ja"], "goal": "iskustvo", "help_de": "Ja, ich habe zwei Jahre in einem Lager gearbeitet.", "help_hr": "Da, radio sam dvije godine u skladištu.", "reply_de": "Wann können Sie anfangen?", "reply_hr": "Kad možete početi?" },
       { "want": ["woche", "sofort", "montag", "kann"], "goal": "početak", "help_de": "Ich kann nächste Woche anfangen.", "help_hr": "Mogu početi sljedeći tjedan.", "reply_de": "Haben Sie noch Fragen?", "reply_hr": "Imate li još pitanja?" },
       { "want": ["arbeitszeit", "gehalt", "lohn", "schicht", "wie"], "goal": "pitanje", "help_de": "Wie sind die Arbeitszeiten?", "help_hr": "Kakvo je radno vrijeme?", "reply_de": "Von sechs bis vierzehn Uhr, Montag bis Freitag. Passt das?", "reply_hr": "Od šest do četrnaest, ponedjeljak do petak. Odgovara li?" },
@@ -25,30 +25,30 @@
     "opening": { "de": "Guten Tag. Was fehlt Ihnen?", "hr": "Dobar dan. Što vam je?", "ask": true },
     "steps": [
       { "want": ["hals", "fieber", "schmerz", "huste", "kopf"], "goal": "simptom", "help_de": "Ich habe Halsschmerzen und Fieber.", "help_hr": "Imam bol u grlu i groznicu.", "reply_de": "Seit wann haben Sie die Beschwerden?", "reply_hr": "Od kada imate tegobe?" },
-      { "want": ["tag", "seit", "gestern", "heute"], "goal": "od kada", "help_de": "Seit drei Tagen.", "help_hr": "Od prije tri dana.", "reply_de": "Nehmen Sie Medikamente?", "reply_hr": "Uzimate li lijekove?" },
-      { "want": ["nein", "para", "ibuprofen", "nur"], "goal": "lijekovi", "help_de": "Nur Paracetamol.", "help_hr": "Samo paracetamol.", "reply_de": "Brauchen Sie eine Krankschreibung?", "reply_hr": "Trebate li bolovanje?" },
+      { "want": ["tag", "seit", "gestern", "heute"], "goal": "od kada", "help_de": "Ich habe die Beschwerden seit drei Tagen.", "help_hr": "Tegobe imam već tri dana.", "reply_de": "Nehmen Sie Medikamente?", "reply_hr": "Uzimate li lijekove?" },
+      { "want": ["nein", "para", "ibuprofen", "nur"], "goal": "lijekovi", "help_de": "Ich nehme bisher nur Paracetamol gegen die Schmerzen.", "help_hr": "Zasad uzimam samo paracetamol protiv bolova.", "reply_de": "Brauchen Sie eine Krankschreibung?", "reply_hr": "Trebate li bolovanje?" },
       { "want": ["ja", "krank", "arbeit", "bitte"], "goal": "bolovanje", "help_de": "Ja, bitte. Ich brauche eine Krankschreibung.", "help_hr": "Da, molim. Trebam bolovanje.", "reply_de": "Gut, für drei Tage. Noch Fragen?", "reply_hr": "Dobro, na tri dana. Još pitanja?" },
-      { "want": ["rezept", "danke", "nein", "wiedersehen"], "goal": "kraj", "help_de": "Nein, danke. Auf Wiedersehen.", "help_hr": "Ne, hvala. Doviđenja.", "reply_de": "Gute Besserung!", "reply_hr": "Poboljšanje!" }
+      { "want": ["rezept", "danke", "nein", "wiedersehen"], "goal": "kraj", "help_de": "Nein, danke. Auf Wiedersehen.", "help_hr": "Ne, hvala. Doviđenja.", "reply_de": "Gute Besserung!", "reply_hr": "Želim vam brz oporavak!" }
     ],
-    "debrief_hr": "Rekao si što boli, od kad, i pitao za bolovanje. To je cijeli posjet u A2."
+    "debrief_hr": "Rekao si što boli, od kad, i pitao za bolovanje. To je cijeli posjet."
   },
   "amt": {
     "opening": { "de": "Guten Tag. Haben Sie einen Termin?", "hr": "Dobar dan. Imate li termin?", "ask": true },
     "steps": [
       { "want": ["termin", "ja", "uhr", "zehn"], "goal": "termin", "help_de": "Ja, ich habe um zehn Uhr einen Termin.", "help_hr": "Da, imam termin u deset.", "reply_de": "Wofür sind Sie hier?", "reply_hr": "Zašto ste ovdje?" },
-      { "want": ["anmeld", "melden", "wohnsitz", "umzug"], "goal": "prijava", "help_de": "Ich möchte mich anmelden.", "help_hr": "Želim se prijaviti.", "reply_de": "Haben Sie Pass und Mietvertrag dabei?", "reply_hr": "Imate li putovnicu i ugovor o najmu?" },
+      { "want": ["anmeld", "melden", "wohnsitz", "umzug"], "goal": "prijava", "help_de": "Ich möchte mich anmelden, weil ich gerade hierher gezogen bin.", "help_hr": "Želim se prijaviti jer sam se upravo doselio ovamo.", "reply_de": "Haben Sie Pass und Mietvertrag dabei?", "reply_hr": "Imate li putovnicu i ugovor o najmu?" },
       { "want": ["pass", "vertrag", "ja", "hier", "unterlagen"], "goal": "papiri", "help_de": "Ja, hier sind Pass und Mietvertrag.", "help_hr": "Da, evo putovnice i ugovora.", "reply_de": "Seit wann wohnen Sie hier?", "reply_hr": "Od kada ovdje stanujete?" },
-      { "want": ["seit", "märz", "marz", "april", "woche", "erste"], "goal": "datum", "help_de": "Seit dem ersten März.", "help_hr": "Od prvog ožujka.", "reply_de": "Bitte unterschreiben Sie das Formular. Fertig?", "reply_hr": "Potpišite obrazac. Gotovo?" },
+      { "want": ["seit", "märz", "marz", "april", "woche", "erste"], "goal": "datum", "help_de": "Ich wohne seit dem ersten März hier.", "help_hr": "Ovdje stanujem od prvog ožujka.", "reply_de": "Bitte unterschreiben Sie das Formular. Fertig?", "reply_hr": "Potpišite obrazac. Gotovo?" },
       { "want": ["ja", "danke", "unterschreib"], "goal": "potpis", "help_de": "Ja, ich unterschreibe hier. Danke.", "help_hr": "Da, potpisujem ovdje. Hvala.", "reply_de": "Gut. Hier ist Ihre Meldebescheinigung.", "reply_hr": "Dobro. Evo potvrde o prijavi." }
     ],
-    "debrief_hr": "Prijava boravišta: termin, papiri, datum useljenja. Zapamti: Ich möchte mich anmelden."
+    "debrief_hr": "Prijava boravišta: termin, papiri, datum useljenja. Zapamti: Ich möchte mich anmelden, weil ich gerade hierher gezogen bin."
   },
   "landlord": {
     "opening": { "de": "Guten Tag. Sie schauen sich die Wohnung an?", "hr": "Dobar dan. Gledate stan?", "ask": true },
     "steps": [
       { "want": ["ja", "wohnung", "interess", "mieten"], "goal": "interes", "help_de": "Ja, ich interessiere mich für die Wohnung.", "help_hr": "Da, zanima me stan.", "reply_de": "Die Miete ist 650 Euro plus Nebenkosten. Passt das?", "reply_hr": "Najamnina je 650 eura plus režije. Odgovara li?" },
       { "want": ["nebenkosten", "was", "heizung", "ja", "passt"], "goal": "režije", "help_de": "Was ist in den Nebenkosten?", "help_hr": "Što je u režijama?", "reply_de": "Heizung, Wasser, Müll. Ab wann möchten Sie mieten?", "reply_hr": "Grijanje, voda, smeće. Od kada želite unajmiti?" },
-      { "want": ["april", "mai", "sofort", "ab", "monat"], "goal": "datum", "help_de": "Ab April, bitte.", "help_hr": "Od travnja, molim.", "reply_de": "Haben Sie eine Schufa? Oder eine Kaution?", "reply_hr": "Imate li Schufu? Ili kauciju?" },
+      { "want": ["april", "mai", "sofort", "ab", "monat"], "goal": "datum", "help_de": "Ich möchte ab April einziehen, weil dann meine Arbeit beginnt.", "help_hr": "Želim se useliti u travnju jer tada počinjem raditi.", "reply_de": "Haben Sie eine Schufa? Oder eine Kaution?", "reply_hr": "Imate li Schufu? Ili kauciju?" },
       { "want": ["schufa", "kaution", "neu", "keine", "noch"], "goal": "kaucija", "help_de": "Ich bin neu in Deutschland. Ich habe noch keine Schufa.", "help_hr": "Novi sam u Njemačkoj. Još nemam Schufu.", "reply_de": "Dann drei Monatsmieten Kaution. Einverstanden?", "reply_hr": "Onda kaucija tri mjesečne najamnine. Slažete se?" },
       { "want": ["ja", "einverstanden", "vertrag", "gut"], "goal": "dogovor", "help_de": "Ja, einverstanden. Kann ich den Mietvertrag sehen?", "help_hr": "Da, slažem se. Mogu li vidjeti ugovor?", "reply_de": "Ja, ich schicke ihn Ihnen.", "reply_hr": "Da, poslat ću vam ga." }
     ],
@@ -69,8 +69,8 @@
     "opening": { "de": "Guten Tag. Wohin möchten Sie fahren?", "hr": "Dobar dan. Kamo želite ići?", "ask": true },
     "steps": [
       { "want": ["münchen", "munchen", "berlin", "ticket", "karte"], "goal": "odredište", "help_de": "Ich brauche ein Ticket nach München.", "help_hr": "Trebam kartu za München.", "reply_de": "Einfach oder hin und zurück?", "reply_hr": "Samo tamo ili povratna?" },
-      { "want": ["einfach", "hin", "zurück", "zuruck", "bitte"], "goal": "vrsta karte", "help_de": "Einfach, bitte.", "help_hr": "Samo tamo, molim.", "reply_de": "Kennen Sie das Deutschlandticket?", "reply_hr": "Poznate li Deutschlandticket?" },
-      { "want": ["was", "deutschlandticket", "ja", "nein", "nicht"], "goal": "info", "help_de": "Was ist das Deutschlandticket?", "help_hr": "Što je Deutschlandticket?", "reply_de": "58 Euro im Monat, regional in ganz Deutschland. Möchten Sie das?", "reply_hr": "58 eura mjesečno, regionalno po Njemačkoj. Želite li to?" },
+      { "want": ["einfach", "hin", "zurück", "zuruck", "bitte"], "goal": "vrsta karte", "help_de": "Ich brauche nur eine Hinfahrt, weil ich länger dort bleibe.", "help_hr": "Trebam samo jednosmjernu kartu jer ću ondje ostati dulje.", "reply_de": "Kennen Sie das Deutschlandticket?", "reply_hr": "Poznate li Deutschlandticket?" },
+      { "want": ["was", "deutschlandticket", "ja", "nein", "nicht"], "goal": "info", "help_de": "Was ist das Deutschlandticket?", "help_hr": "Što je Deutschlandticket?", "reply_de": "Den aktuellen Preis finden Sie am Automaten. Möchten Sie das Ticket?", "reply_hr": "Aktualnu cijenu možete provjeriti na automatu. Želite li kartu?" },
       { "want": ["ja", "bitte", "nehmen", "kaufen"], "goal": "kupnja", "help_de": "Ja, bitte. Ich nehme das Deutschlandticket.", "help_hr": "Da, molim. Uzimam Deutschlandticket.", "reply_de": "Kann ich Ihren Ausweis sehen? Fahren Sie auch S-Bahn?", "reply_hr": "Mogu li vidjeti iskaznicu? Vozite li i S-Bahn?" },
       { "want": ["ja", "s-bahn", "sbahn", "ausweis", "hier"], "goal": "potvrda", "help_de": "Ja, hier ist mein Ausweis. Ich fahre auch S-Bahn.", "help_hr": "Da, evo iskaznice. Vozim i S-Bahn.", "reply_de": "Perfekt. Das Ticket gilt auch in Bus und Tram.", "reply_hr": "Odlično. Karta vrijedi i u busu i tramvaju." }
     ],
@@ -82,7 +82,7 @@
       { "want": ["ja", "termin", "aufenthalt"], "goal": "termin", "help_de": "Ja, ich habe einen Termin für die Aufenthaltserlaubnis.", "help_hr": "Da, imam termin za dozvolu boravka.", "reply_de": "Bitte Ihren Pass. Arbeiten Sie schon?", "reply_hr": "Putovnicu, molim. Radite li već?" },
       { "want": ["pass", "hier", "noch nicht", "suche", "arbeit", "nein"], "goal": "status", "help_de": "Hier ist mein Pass. Noch nicht, ich suche Arbeit.", "help_hr": "Evo putovnice. Još ne, tražim posao.", "reply_de": "Dann brauchen Sie eine Fiktionsbescheinigung. Wissen Sie, was das ist?", "reply_hr": "Onda trebate privremenu potvrdu. Znate li što je to?" },
       { "want": ["nicht", "was", "bedeutet", "nein", "bitte"], "goal": "pojašnjenje", "help_de": "Ich verstehe nicht ganz. Was bedeutet das?", "help_hr": "Ne razumijem baš. Što to znači?", "reply_de": "Sie dürfen vorläufig bleiben. Wie lange sind Sie in Deutschland?", "reply_hr": "Smijete privremeno ostati. Koliko ste dugo u Njemačkoj?" },
-      { "want": ["monat", "woche", "jahr", "seit"], "goal": "boravak", "help_de": "Seit zwei Monaten.", "help_hr": "Od prije dva mjeseca.", "reply_de": "Bringen Sie biometrische Fotos mit. Alles da?", "reply_hr": "Donijeti biometrijske fotografije. Je li sve tu?" },
+      { "want": ["monat", "woche", "jahr", "seit"], "goal": "boravak", "help_de": "Ich bin seit zwei Monaten in Deutschland.", "help_hr": "U Njemačkoj sam već dva mjeseca.", "reply_de": "Bringen Sie biometrische Fotos mit. Alles da?", "reply_hr": "Donijeti biometrijske fotografije. Je li sve tu?" },
       { "want": ["foto", "ja", "mitbringen", "danke"], "goal": "fotografije", "help_de": "Ja, ich bringe die Fotos mit.", "help_hr": "Da, donijet ću fotografije.", "reply_de": "Gut. Warten Sie bitte im Flur.", "reply_hr": "Dobro. Pričekajte u hodniku." }
     ],
     "debrief_hr": "Termin, putovnica, Fiktionsbescheinigung. Reci glasno: Ich verstehe nicht ganz — to je tvoje pravo na Amtu."
@@ -91,30 +91,30 @@
     "opening": { "de": "Guten Tag. Sie möchten einen Platz für Ihr Kind?", "hr": "Dobar dan. Želite mjesto za dijete?", "ask": true },
     "steps": [
       { "want": ["ja", "tochter", "sohn", "kind", "jahre"], "goal": "dijete", "help_de": "Ja, für meine Tochter. Sie ist drei Jahre alt.", "help_hr": "Da, za kćer. Ima tri godine.", "reply_de": "Ab wann brauchen Sie den Platz?", "reply_hr": "Od kada trebate mjesto?" },
-      { "want": ["september", "august", "sofort", "ganztags", "ab"], "goal": "početak", "help_de": "Ab September, ganztags.", "help_hr": "Od rujna, cijeli dan.", "reply_de": "Von sieben bis sechzehn Uhr. Was kostet das — möchten Sie das wissen?", "reply_hr": "Od sedam do šesnaest. Želite li znati cijenu?" },
+      { "want": ["september", "august", "sofort", "ganztags", "ab"], "goal": "početak", "help_de": "Wir brauchen ab September einen Ganztagsplatz, weil wir beide arbeiten.", "help_hr": "Od rujna trebamo cjelodnevni boravak jer oboje radimo.", "reply_de": "Von sieben bis sechzehn Uhr. Was kostet das — möchten Sie das wissen?", "reply_hr": "Od sedam do šesnaest. Želite li znati cijenu?" },
       { "want": ["kostet", "ja", "preis", "wie viel", "wieviel"], "goal": "cijena", "help_de": "Ja. Was kostet das?", "help_hr": "Da. Koliko to košta?", "reply_de": "Das hängt vom Einkommen ab. Haben Sie Impfnachweise?", "reply_hr": "Ovisi o prihodu. Imate li potvrde o cijepljenju?" },
       { "want": ["impf", "masern", "ja", "bringen"], "goal": "cijepljenje", "help_de": "Ja, ich bringe den Impfnachweis mit.", "help_hr": "Da, donijet ću potvrdu o cijepljenju.", "reply_de": "Bitte füllen Sie das Formular aus. Noch Fragen?", "reply_hr": "Ispunite obrazac. Još pitanja?" },
       { "want": ["nein", "danke", "formular"], "goal": "kraj", "help_de": "Nein, danke. Ich fülle das Formular aus.", "help_hr": "Ne, hvala. Ispunit ću obrazac.", "reply_de": "Sehr gut. Wir melden uns.", "reply_hr": "Vrlo dobro. Javit ćemo se." }
     ],
-    "debrief_hr": "Dijete, od kada, ganztags, cijepivo. Na vrtiću kratke rečenice prolaze bolje od priče."
+    "debrief_hr": "Dijete, od kada, ganztags, cjepivo. U vrtiću jasno reci kada trebate mjesto i postavi pitanje."
   },
   "neighbor": {
-    "opening": { "de": "Hallo, du bist neu hier, oder?", "hr": "Bok, novi si ovdje, zar ne?", "ask": true },
+    "opening": { "de": "Guten Tag, Sie sind neu hier, oder?", "hr": "Dobar dan, novi ste ovdje, zar ne?", "ask": true },
     "steps": [
-      { "want": ["ja", "eingezogen", "neu", "woche"], "goal": "useljenje", "help_de": "Ja, ich bin vor einer Woche eingezogen.", "help_hr": "Da, uselio sam se prije tjedan dana.", "reply_de": "Willkommen! Wie heißt du?", "reply_hr": "Dobro došao! Kako se zoveš?" },
+      { "want": ["ja", "eingezogen", "neu", "woche"], "goal": "useljenje", "help_de": "Ja, ich bin vor einer Woche eingezogen.", "help_hr": "Da, uselio sam se prije tjedan dana.", "reply_de": "Willkommen! Wie heißen Sie?", "reply_hr": "Dobro došli! Kako se zovete?" },
       { "want": ["heiße", "heisse", "ich bin", "name"], "goal": "ime", "help_de": "Ich heiße Ana.", "help_hr": "Zovem se Ana.", "reply_de": "Schön. Eine Bitte: nach 22 Uhr bitte leise. Okay?", "reply_hr": "Lijepo. Molba: nakon 22 tiho. Ok?" },
-      { "want": ["ja", "leise", "natürlich", "naturlich", "leid"], "goal": "tišina", "help_de": "Natürlich. Tut mir leid, wenn es laut war.", "help_hr": "Naravno. Oprosti ako je bilo glasno.", "reply_de": "Kein Problem. Weißt du, wo der Müll ist?", "reply_hr": "Nema frke. Znaš li gdje je smeće?" },
-      { "want": ["nein", "nicht", "wo", "müll", "mull"], "goal": "smeće", "help_de": "Noch nicht. Kannst du das bitte sagen?", "help_hr": "Još ne. Možeš li to reći?", "reply_de": "Gelber Sack, Restmüll, Biomüll im Hof. Alles klar?", "reply_hr": "Žuta vreća, ostalo, bio u dvorištu. Jasno?" },
+      { "want": ["ja", "leise", "natürlich", "naturlich", "leid"], "goal": "tišina", "help_de": "Natürlich. Tut mir leid, wenn es laut war.", "help_hr": "Naravno. Oprostite ako je bilo glasno.", "reply_de": "Kein Problem. Wissen Sie, wo die Mülltonnen stehen?", "reply_hr": "Nema problema. Znate li gdje su spremnici za otpad?" },
+      { "want": ["nein", "nicht", "wo", "müll", "mull"], "goal": "smeće", "help_de": "Noch nicht. Können Sie mir bitte zeigen, wo die Mülltonnen stehen?", "help_hr": "Još ne. Možete li mi pokazati gdje su spremnici za otpad?", "reply_de": "Gelber Sack, Restmüll, Biomüll im Hof. Alles klar?", "reply_hr": "Žuta vreća, ostalo, bio u dvorištu. Jasno?" },
       { "want": ["danke", "ja", "klar", "post"], "goal": "kraj", "help_de": "Danke. Wann kommt die Post?", "help_hr": "Hvala. Kad dolazi pošta?", "reply_de": "Morgens, so gegen zehn. Bis dann!", "reply_hr": "Ujutro, oko deset. Vidimo se!" }
     ],
-    "debrief_hr": "Predstavljanje, tišina nakon 22, smeće. Sa susjedima du je u redu — samo budi jasan."
+    "debrief_hr": "Predstavljanje, tišina nakon 22, smeće. Pri prvom susretu koristi Sie i jasno reci što trebaš."
   },
   "parcel": {
     "opening": { "de": "Guten Tag. Kann ich Ihnen helfen?", "hr": "Dobar dan. Mogu li pomoći?", "ask": true },
     "steps": [
       { "want": ["paket", "abholen", "sendung"], "goal": "paket", "help_de": "Ja, ich möchte ein Paket abholen.", "help_hr": "Da, želim preuzeti paket.", "reply_de": "Haben Sie den Code und Ihren Ausweis?", "reply_hr": "Imate li kod i osobnu iskaznicu?" },
-      { "want": ["ausweis", "code", "ja", "hier"], "goal": "iskaznica", "help_de": "Ja, hier ist mein Ausweis. Der Code ist 4821.", "help_hr": "Da, evo iskaznice. Kod je 4821.", "reply_de": "Muss ich unterschreiben — möchten Sie das Paket jetzt?", "reply_hr": "Želite li paket sada? Treba potpis." },
-      { "want": ["ja", "unterschreib", "bitte"], "goal": "potpis", "help_de": "Ja, ich unterschreibe. Muss ich unterschreiben?", "help_hr": "Da, potpisujem. Moram li potpisati?", "reply_de": "Ja, hier. Ist die Adresse Hauptstraße 12?", "reply_hr": "Da, ovdje. Je li adresa Hauptstraße 12?" },
+      { "want": ["ausweis", "code", "ja", "hier"], "goal": "iskaznica", "help_de": "Ja, hier ist mein Ausweis. Der Code ist 4821.", "help_hr": "Da, evo iskaznice. Kod je 4821.", "reply_de": "Bitte unterschreiben Sie hier, damit ich Ihnen das Paket geben kann.", "reply_hr": "Potpišite ovdje kako bih vam mogao predati paket." },
+      { "want": ["ja", "unterschreib", "bitte"], "goal": "potpis", "help_de": "Ja, ich unterschreibe hier, damit ich das Paket mitnehmen kann.", "help_hr": "Da, potpisujem ovdje kako bih mogao preuzeti paket.", "reply_de": "Ja, hier. Ist die Adresse Hauptstraße 12?", "reply_hr": "Da, ovdje. Je li adresa Hauptstraße 12?" },
       { "want": ["ja", "stimmt", "richtig", "haupt"], "goal": "adresa", "help_de": "Ja, das stimmt.", "help_hr": "Da, točno.", "reply_de": "Hier ist Ihr Paket. Noch etwas?", "reply_hr": "Evo paketa. Još nešto?" },
       { "want": ["nein", "danke", "wiedersehen"], "goal": "kraj", "help_de": "Nein, danke. Auf Wiedersehen.", "help_hr": "Ne, hvala. Doviđenja.", "reply_de": "Gern geschehen.", "reply_hr": "Nema na čemu." }
     ],
@@ -124,9 +124,9 @@
     "opening": { "de": "Guten Tag. Was ist passiert?", "hr": "Dobar dan. Što se dogodilo?", "ask": true },
     "steps": [
       { "want": ["schmerz", "bauch", "kopf", "fieber", "weh"], "goal": "bol", "help_de": "Ich habe starke Schmerzen im Bauch.", "help_hr": "Imam jake bolove u trbuhu.", "reply_de": "Seit wann?", "reply_hr": "Od kada?" },
-      { "want": ["seit", "heute", "morgen", "stunde", "gestern"], "goal": "vrijeme", "help_de": "Seit heute Morgen.", "help_hr": "Od jutros.", "reply_de": "Haben Sie eine Versicherungskarte?", "reply_hr": "Imate li karticu osiguranja?" },
+      { "want": ["seit", "heute", "morgen", "stunde", "gestern"], "goal": "vrijeme", "help_de": "Die Schmerzen haben heute Morgen angefangen.", "help_hr": "Bolovi su počeli jutros.", "reply_de": "Haben Sie eine Versicherungskarte?", "reply_hr": "Imate li karticu osiguranja?" },
       { "want": ["ja", "karte", "hier", "versicherung"], "goal": "osiguranje", "help_de": "Ja, hier ist meine Karte.", "help_hr": "Da, evo kartice.", "reply_de": "Allergien? Medikamente?", "reply_hr": "Alergije? Lijekovi?" },
-      { "want": ["keine", "nein", "allergie", "nicht"], "goal": "alergije", "help_de": "Keine Allergien.", "help_hr": "Nema alergija.", "reply_de": "Ihr Name bitte. Setzen Sie sich dann.", "reply_hr": "Ime, molim. Onda sjednite." },
+      { "want": ["keine", "nein", "allergie", "nicht"], "goal": "alergije", "help_de": "Soweit ich weiß, habe ich keine Allergien.", "help_hr": "Koliko znam, nemam alergija.", "reply_de": "Ihr Name bitte. Setzen Sie sich dann.", "reply_hr": "Ime, molim. Onda sjednite." },
       { "want": ["name", "heiße", "heisse", "horvat", "marko"], "goal": "ime", "help_de": "Mein Name ist Marko Horvat.", "help_hr": "Zovem se Marko Horvat.", "reply_de": "Gut. Sie kommen gleich dran.", "reply_hr": "Dobro. Uskoro ste na redu." }
     ],
     "debrief_hr": "Hitna: što boli, od kad, kartica, alergije, ime. Bez priče — samo činjenice."

@@ -4,8 +4,8 @@ Situation:
 {{situation_json}}
 
 Goal (Croatian): {{goal_hr}}
-Level: {{level}}
-Formality: {{formality}}
+Level: B1
+Formality: Sie
 Turn number: {{turn}} / 12
 Action: {{action}}
   start = opening greeting, ask first question
@@ -39,7 +39,9 @@ Return JSON exactly:
 }
 
 Rules:
-- ask must be true unless scene_complete.
+- ask must be true unless scene_complete or action is check. For check, leave in_character_de and in_character_hr empty and scene_complete false.
+- Evaluate whether the learner communicated the intended meaning, not whether they repeated the sample. Accept valid paraphrases and alternative details. Do not infer that a keyword alone achieves a goal.
+- Give at most one specific, actionable correction per turn, with one brief Croatian explanation. Leave corrected_de empty when the answer is acceptable; do not replace correct wording just to match a sample.
 - If action is help: do not advance the scene; coach.say_this_now_de is the line they should say; in_character_de can be a short wait/nudge in German.
 - If action is dont_understand: in_character_de is a slower, simpler repeat of the last question.
 - If the heard text is Croatian or English: coach.notes_hr starts with "Na njemačkom, ovako.", give corrected_de, then in_character_de asks the same question again in German.
