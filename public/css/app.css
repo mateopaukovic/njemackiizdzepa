@@ -434,6 +434,19 @@ input:disabled {
   padding: 1.25rem 1.25rem 0.5rem;
 }
 
+.scroll,
+.chat-list,
+textarea {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll::-webkit-scrollbar,
+.chat-list::-webkit-scrollbar,
+textarea::-webkit-scrollbar {
+  display: none;
+}
+
 .thread {
   max-width: 44rem;
   margin: 0 auto;
